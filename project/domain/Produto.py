@@ -40,14 +40,7 @@ class Produto:
     fator_aumento = 1 + (porcentagem_aumento/100)
     self.preco = self.preco * fator_aumento
   
-  def atualizar_descricao(self, nova_descricao:str) -> None:
-    if(not isinstance(nova_descricao, str)):
-      raise TypeError(f"A entrada deve ser um texto(string)")
-    if(not nova_descricao.strip()):
-      raise ValueError(f"Ao atualizar uma descrição, ela não pode continuar vazia")
-    self.descricao = nova_descricao
- 
- 
+  
   #Getters
   @property
   def nome(self) ->str:
