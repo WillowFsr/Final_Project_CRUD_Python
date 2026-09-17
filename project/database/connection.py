@@ -13,10 +13,11 @@ def iniciar_conneccao():
       host=os.getenv("DB_HOST"),
       port=os.getenv("DB_PORT")
     )
+    return conn
 
   except psycopg2.OperationalError as e:
     print(f"Erro ao se conectar ao Banco de Dados {e}")
+  return None
   except Exception as e:
     print(f"erro inesperado {e}")
-
-  
+    return None
