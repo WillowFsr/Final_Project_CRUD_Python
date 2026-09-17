@@ -1,3 +1,4 @@
+from __future__ import annotations #it serves to from db method
 from typing import Optional
 
 class Produto:
@@ -9,7 +10,7 @@ class Produto:
   
   # - > Methods
   
-  #used on json and api routes
+  #used on json and api routes, just in case of future updates
   def to_dict(self)-> dict[str,any]:
     return{
       "id": self.id_prod,
@@ -18,9 +19,14 @@ class Produto:
       "descricao": self.descricao 
     }
   
-  #used on connection in database on commands like insert and update
-  def to_tuple(self) -> tuple(str, float, str):
+  #used on connection in database on commands like insert and update, it could be unsderstandable of a way to transfer a class for a database
+  def to_tuple(self) -> tuple[str, float, str] :
     return (self.nome, self.preco,self.descricao)
+
+  #its the oposite way, it transfer the data from database and turns it in to a object. it gets a tuple from database and sends it to the init method so it could be used to execute methods in the class
+  @staticmethod
+  def from_db(linha:tuple)-> Produto:
+    return Produto(id_prod=linha[0], nome=linha[1], preco=linha[2], descricao=linha[3])
 
   def desconto(self,porcentagem_desconto:int |float) -> None:
     if (not isinstance(porcentagem_desconto,(int, float) )):
@@ -40,7 +46,7 @@ class Produto:
     fator_aumento = 1 + (porcentagem_aumento/100)
     self.preco = self.preco * fator_aumento
   
-  
+
   #Getters
   @property
   def nome(self) ->str:
