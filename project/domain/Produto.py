@@ -1,5 +1,5 @@
 from __future__ import annotations #it serves to from db method
-from typing import Optional
+from typing import Optional, Any
 
 class Produto:
   def __init__(self, nome: str, preco: float, descricao:str,id_prod: Optional[int] = None ):
@@ -11,7 +11,7 @@ class Produto:
   # - > Methods
   
   #used on json and api routes, just in case of future updates
-  def to_dict(self)-> dict[str,any]:
+  def to_dict(self)-> dict[str,Any]:
     return{
       "id": self.id_prod,
       "nome": self.nome,
