@@ -32,8 +32,11 @@ class Usuario(ABC):
   def maior_de_idade(self) -> bool:
     return self.idade>=18
   
-  def atualizar_endereco(self, novo_endereco: str) -> None:
-        self.endereco = novo_endereco
+    if(not isinstance(novo_endereco, str)):
+      raise TypeError(f"A entrada deveria ser um texto(string)")
+    if(not novo_endereco.strip()):
+      raise ValueError(f"O novo endereco nao pode ser vazio")
+    self.endereco = novo_endereco
   
   #Getter
   @property
