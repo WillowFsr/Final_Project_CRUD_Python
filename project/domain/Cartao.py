@@ -28,15 +28,15 @@ class Cartao:
     return (self.numero, self.validade, self.cvv, self.bandeira, self.valor, self.id_usr)
   
   @staticmethod
-  def from_db(lista:tuple) -> Cartao:
+  def from_db(linha:tuple) -> Cartao:
     return Cartao(
-      numero= lista[0],
-      validade=lista[1],
-      cvv=lista[2],
-      bandeira=lista[3],
-      valor=lista[4],
-      id_usr=lista[5],
-      id_cartao=lista[6]
+      numero= linha[0],
+      validade=linha[1],
+      cvv=linha[2],
+      bandeira=linha[3],
+      valor=linha[4],
+      id_usr=linha[5],
+      id_cartao=linha[6]
     )
   
   #Getters
