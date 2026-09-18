@@ -2,13 +2,14 @@ from __future__ import annotations
 from typing import Optional,Any
 
 class Cartao:
-  def __init__(self, numero: int, validade: str, cvv: str, bandeira: str, id_usr: Optional[int] = None, id_cartao:Optional[int] = None ):
+  def __init__(self, numero: int, validade: str, cvv: str, bandeira: str, valor:float,id_usr: Optional[int] = None, id_cartao:Optional[int] = None ):
     self.id_cartao = id_cartao
     self.id_usr = id_usr
     self.numero = numero
     self.validade = validade
     self.cvv = cvv
     self.bandeira = bandeira
+    self.valor = valor
 
   # - > Methods
   def to_dict(self) -> dict[str, Any]:
@@ -18,11 +19,13 @@ class Cartao:
       "numero": self.numero,
       "validade": self.validade,
       "cvv":self.cvv,
-      "bandeira": self.bandeira
+      "bandeira": self.bandeira,
+      "valor": self.valor
+
     }
   
-  def to_tuple(self) -> tuple[int, str, str, str, Optional[int]]:
-    return (self.numero, self.validade, self.cvv, self.bandeira, self.id_usr)
+  def to_tuple(self) -> tuple[int, str, str, str, float,Optional[int]]:
+    return (self.numero, self.validade, self.cvv, self.bandeira, self.valor, self.id_usr)
   
   @staticmethod
   def from_db(lista:tuple) -> Cartao:
@@ -31,8 +34,9 @@ class Cartao:
       validade=lista[1],
       cvv=lista[2],
       bandeira=lista[3],
-      id_usr=lista[4],
-      id_cartao=lista[5]
+      valor=lista[4],
+      id_usr=lista[5],
+      id_cartao=lista[6]
     )
   
   #Getters
@@ -59,6 +63,10 @@ class Cartao:
   @property
   def bandeira(self) -> str:
     return self._bandeira
+
+  @property 
+  def valor(self) -> float:
+    return self._valor
 
   # #Setters
   @id_cartao.setter
@@ -105,3 +113,10 @@ class Cartao:
       raise ValueError(f"A bandeira do cartao nao pode ser nula")
     self._bandeira = bandeira
   
+  @valor.setter
+  def valor(self, valor:float|int) -> None:
+    if(not isinstance(valor, (float,int))):
+      raise TypeError(f"Entrada incorreta, esperado um número")
+    if(valor <0):
+      raise ValueError(f"O dinheiro numa conta não pode ser menor que zero")
+    self._valor = float(valor)
