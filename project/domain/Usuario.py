@@ -3,7 +3,7 @@ from typing import Optional, Any
 from abc import ABC, abstractmethod
 
 class Usuario(ABC):
-  def __init__(self,idade:int, nome: str, endereco:str, nacionalidade:str, id_usr: Optional[int] = None ):
+  def __init__(self, nome: str, idade:int , endereco:str, nacionalidade:str, id_usr: Optional[int] = None ):
     self.id_usr = id_usr
     self.idade = idade
     self.nome = nome
@@ -20,23 +20,17 @@ class Usuario(ABC):
       "nacionalidade":self.nacionalidade
     }
 
-  def to_tuple(self) -> tuple[str, int, str, str]:
-    return (self.nome,self.idade,self.endereco, self.nacionalidade)
+  def to_tuple(self) -> tuple[str, int, str, str, Optional[int]]:
+    return (self.nome, self.idade, self.endereco, self.nacionalidade, self.id_usr)
   
   #this class is abstract, so it cannot implement from_db, only her childs
-  @abstractmethod
   @staticmethod
-  def from_db(linha: tuple) ->  Usuario:
+  @abstractmethod
+  def from_db(linha: tuple) -> Usuario:
     pass
   
   def maior_de_idade(self) -> bool:
     return self.idade>=18
-  
-    if(not isinstance(novo_endereco, str)):
-      raise TypeError(f"A entrada deveria ser um texto(string)")
-    if(not novo_endereco.strip()):
-      raise ValueError(f"O novo endereco nao pode ser vazio")
-    self.endereco = novo_endereco
   
   #Getter
   @property

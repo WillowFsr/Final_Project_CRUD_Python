@@ -11,8 +11,30 @@ class Cartao:
     self.bandeira = bandeira
 
   # - > Methods
-
-
+  def to_dict(self) -> dict[str, Any]:
+    return {
+      "id_cartao": self.id_cartao,
+      "id_usr": self.id_usr,
+      "numero": self.numero,
+      "validade": self.validade,
+      "cvv":self.cvv,
+      "bandeira": self.bandeira
+    }
+  
+  def to_tuple(self) -> tuple[int, str, str, str, Optional[int]]:
+    return (self.numero, self.validade, self.cvv, self.bandeira, self.id_usr)
+  
+  @staticmethod
+  def from_db(lista:tuple) -> Cartao:
+    return Cartao(
+      numero= lista[0],
+      validade=lista[1],
+      cvv=lista[2],
+      bandeira=lista[3],
+      id_usr=lista[4],
+      id_cartao=lista[5]
+    )
+  
   #Getters
   @property
   def id_cartao(self) -> Optional[int]:
