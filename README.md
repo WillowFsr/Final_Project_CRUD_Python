@@ -14,9 +14,7 @@ Final_Project_CRUD_Python/
     ├── database/         # Configuração de conexão e comunicação direta com PostgreSQL (Psycopg 3)
     ├── domain/           # Entidades e regras de negócio puras (Produto, Cliente, Carrinho, etc.)
     ├── repository/       # Ponte de persistência (mapeia banco de dados <-> entidades do domínio)
-    ├── .env              # Variáveis de ambiente locais
     ├── .env.exemple      # Modelo de variáveis de ambiente
-    ├── .gitignore        # Arquivos ignorados pelo controle de versão
     ├── main.py           # Ponto de entrada e orquestração do sistema
     └── requirements.txt  # requisitos para facilitar a instalação de dependências
 ```
