@@ -3,8 +3,7 @@ from typing import Optional, Any
 from abc import ABC, abstractmethod
 
 class Usuario(ABC):
-  def __init__(self, nome: str, idade:int , endereco:str, nacionalidade:str, id_usr: Optional[int] = None ):
-    self.id_usr = id_usr
+  def __init__(self, nome: str, idade:int , endereco:str, nacionalidade:str):
     self.idade = idade
     self.nome = nome
     self.endereco = endereco
@@ -13,15 +12,14 @@ class Usuario(ABC):
   # - > Methods
   def to_dict(self) -> dict[str,Any]:
     return {
-      "id_usr":self.id_usr,
       "nome":self.nome,
       "idade":self.idade,
       "endereco":self.endereco,
       "nacionalidade":self.nacionalidade
     }
 
-  def to_tuple(self) -> tuple[str, int, str, str, Optional[int]]:
-    return (self.nome, self.idade, self.endereco, self.nacionalidade, self.id_usr)
+  def to_tuple(self) -> tuple[str, int, str, str]:
+    return (self.nome, self.idade, self.endereco, self.nacionalidade)
   
   #this class is abstract, so it cannot implement from_db, only her childs
   @staticmethod
@@ -36,10 +34,6 @@ class Usuario(ABC):
   @property
   def nome(self) -> str:
     return self._nome
-
-  @property
-  def id_usr(self) -> Optional[int]:
-    return self._id_usr
   
   @property
   def idade(self) -> int:
@@ -63,12 +57,6 @@ class Usuario(ABC):
       
     self._nome = nome  
 
-  @id_usr.setter
-  def id_usr(self, id_usr: Optional[int]) -> None:
-    if(id_usr is not None and not isinstance(id_usr,int)):
-      raise TypeError("O ID do usuário deverá ser um inteiro")
-    self._id_usr = id_usr
-  
   @endereco.setter
   def endereco(self, endereco:str) -> None:
     if (not isinstance(endereco,str)):

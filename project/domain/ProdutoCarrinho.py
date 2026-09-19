@@ -32,6 +32,6 @@ class ProdutoCarrinho:
       raise TypeError(f"A quantidade deve ser um numero inteiro")
     if (quantidade <= 0):
       raise ValueError(f"A quantidade de compra nao pode ser inferior ou igual a 0")
-    if(quantidade > self.produto.quantidade):
+    if(quantidade > self.produto.estoque):
       raise ValueError(f"A quantidade de compra e superior ao estoque")
     self._quantidade = quantidade

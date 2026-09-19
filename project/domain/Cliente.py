@@ -1,38 +1,39 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, Any
 from Usuario import Usuario
 from Cartao import Cartao
 from Carrinho import Carrinho
  
-
 class Cliente(Usuario):
-  def __init__(self, nome: str, idade:int , endereco:str, nacionalidade:str, id_usr: Optional[int] = None):
-    super().__init__(nome, idade, endereco, nacionalidade, id_usr)
+  def __init__(self, nome: str, idade:int , endereco:str, nacionalidade:str, id_cli: Optional[int] = None):
+    super().__init__(nome, idade, endereco, nacionalidade)
+    self.id_cli = id_cli
     self.cartoes:list[Cartao] = []
     self.carrinho:Carrinho = Carrinho()
   
   # - > Methods
   def to_dict(self) -> dict[str, Any]:
     dados = super().to_dict()
+    dados["id_cli"] = self.id_cli
     dados["cartoes"] = [cartao.to_dict() for cartao in self.cartoes]
     dados["carrinho"] = self.carrinho.to_dict() if hasattr(self.carrinho, "to_dict") else []
     return dados
 
-  def to_tuple(self) -> tuple[str, int, str, str]:
-    return (self.nome, self.idade, self.endereco, self.nacionalidade)
+  def to_tuple(self) -> tuple[str, int, str, str, Optional[int]]:
+    return (self.nome, self.idade, self.endereco, self.nacionalidade, self.id_cli)
 
   @staticmethod
   def from_db(linha: tuple) -> Cliente:
-    return Cliente( id_usr=linha[0], nome=linha[1], idade=linha[2], endereco=linha[3], nacionalidade=linha[4])    
+    return Cliente(id_cli=linha[0], nome=linha[1], idade=linha[2], endereco=linha[3], nacionalidade=linha[4])    
   
   def inserir_cartao(self, cartao:Cartao) -> None:
     if(not isinstance(cartao, Cartao)):
       raise TypeError(f"Para inserir um cartao ao cliente, coloque um objeto cartao válido")
     if(cartao in self.cartoes):
       raise ValueError(f"Cartao já inserido")
-    #associate the cartao.id_user as the actual user. if a new client, mantain as none for the database associate the forgein key
-    if(self.id_usr is not None):
-      cartao.id_usr = self.id_usr
+    
+    if(self.id_cli is not None):
+      cartao.id_usr = self.id_cli
     
     self.cartoes.append(cartao)
     
@@ -46,3 +47,14 @@ class Cliente(Usuario):
 
   def listar_cartoes(self) -> list[Cartao]:
     return self.cartoes.copy()
+
+  # Getter e Setter para id_cli
+  @property
+  def id_cli(self) -> Optional[int]:
+    return self._id_cli
+
+  @id_cli.setter
+  def id_cli(self, id_cli: Optional[int]) -> None:
+    if(id_cli is not None and not isinstance(id_cli, int)):
+      raise TypeError("O ID do cliente deverá ser um inteiro")
+    self._id_cli = id_cli
