@@ -38,3 +38,13 @@ class ProcessadorPagamento:
     cliente_cartao.valor -= total_compra
 
     #changing Produto.quantidade to deduce stock
+    for produto_carrinho in carrinho._produto_carrinho:
+      produto = produto_carrinho._produto
+      quantidade_comprada = produto_carrinho.quantidade
+
+      if (quantidade_comprada > produto.estoque):
+        raise ValueError(f"Estoque insuficiente para o produto {produto.nome}")
+      
+      produto.estoque -= quantidade_comprada
+    
+    carrinho.limpar_carrinho()
