@@ -2,12 +2,12 @@ from __future__ import annotations #it serves to from db method
 from typing import Optional, Any
 
 class Produto:
-  def __init__(self, nome: str, preco: float, descricao:str,quantidade:int,id_prod: Optional[int] = None ):
+  def __init__(self, nome: str, preco: float, descricao:str, estoque:int, id_prod: Optional[int] = None ):
     self.id_prod = id_prod
     self.nome = nome
     self.preco = preco
     self.descricao = descricao
-    self.quantidade = quantidade
+    self.estoque = estoque
   
   # - > Methods
   
@@ -17,18 +17,18 @@ class Produto:
       "id": self.id_prod,
       "nome": self.nome,
       "preco": self.preco,
-      "quantidade": self.quantidade,
+      "estoque": self.estoque,
       "descricao": self.descricao 
     }
   
   #used on connection in database on commands like insert and update, it could be unsderstandable of a way to transfer a class for a database
-  def to_tuple(self) -> tuple[str, float, str,int] :
-    return (self.nome, self.preco,self.descricao,self.quantidade)
+  def to_tuple(self) -> tuple[str, float, str, int] :
+    return (self.nome, self.preco, self.descricao, self.estoque)
 
   #its the oposite way, it transfer the data from database and turns it in to a object. it gets a tuple from database and sends it to the init method so it could be used to execute methods in the class
   @staticmethod
   def from_db(linha:tuple)-> Produto:
-    return Produto(id_prod=linha[0], nome=linha[1], preco=linha[2], descricao=linha[3], quantidade=linha[4] )
+    return Produto(id_prod=linha[0], nome=linha[1], preco=linha[2], descricao=linha[3], estoque=linha[4] )    
 
   def desconto(self,porcentagem_desconto:int |float) -> None:
     if (not isinstance(porcentagem_desconto,(int, float) )):
@@ -47,7 +47,7 @@ class Produto:
     
     fator_aumento = 1 + (porcentagem_aumento/100)
     self.preco = self.preco * fator_aumento
-  
+ 
 
   #Getters
   @property
@@ -67,8 +67,8 @@ class Produto:
     return self._id_prod
   
   @property
-  def quantidade(self) -> int:
-    return self._quantidade
+  def estoque(self) -> int:
+    return self._estoque
   #Setters
   @nome.setter
   def nome(self, nome:str) -> None:
@@ -101,10 +101,10 @@ class Produto:
       raise TypeError(f"O ID do produto deverá ser um inteiro")
     self._id_prod = id_prod
   
-  @quantidade.setter
-  def quantidade(self, quantidade:int|float) -> None:
-    if( not isinstance(quantidade, (float,int))):
-      raise TypeError(f"A quantidade de um produto tem que ser um numero")
-    if (quantidade<0):
-      raise ValueError(f"A quantidade tem que ser maior que zero")
-    self._quantidade = int(quantidade)
+  @estoque.setter
+  def estoque(self, estoque:int|float) -> None:
+    if( not isinstance(estoque, (float,int))):
+      raise TypeError(f"O estoque de um produto tem que ser um numero")
+    if (estoque <0):
+      raise ValueError(f"O estoque tem que ser maior ou igual a zero")
+    self._estoque = int(estoque)

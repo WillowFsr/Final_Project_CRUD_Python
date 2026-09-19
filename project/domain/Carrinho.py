@@ -40,7 +40,6 @@ class Carrinho:
         return True
     
     raise ValueError(f"Produto nao encontrado")
-    return False
 
   def produto_no_carrinho(self) -> list[ProdutoCarrinho]:
     return self._produto_carrinho.copy()
