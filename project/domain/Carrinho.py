@@ -43,7 +43,7 @@ class Carrinho:
     return False
 
   def produto_no_carrinho(self) -> list[ProdutoCarrinho]:
-    return self._produto_carrinho
+    return self._produto_carrinho.copy()
   
   def limpar_carrinho(self) -> None:
     self._produto_carrinho.clear()
@@ -53,5 +53,3 @@ class Carrinho:
     for produtocarrinho in self._produto_carrinho:
       valor_total += produtocarrinho.subtotal_produtos()
     return valor_total
-
-
