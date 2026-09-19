@@ -2,9 +2,9 @@ from __future__ import annotations
 from typing import Optional,Any
 
 class Cartao:
-  def __init__(self, numero: int, validade: str, cvv: str, bandeira: str, valor:float,id_usr: Optional[int] = None, id_cartao:Optional[int] = None ):
-    self.id_cartao = id_cartao
-    self.id_usr = id_usr
+  def __init__(self, numero: int, validade: str, cvv: str, bandeira: str, valor:float,id_cli: Optional[int] = None, id_cartao:Optional[int] = None ):
+    self.id_cartao = id_cartao  
+    self.id_cli = id_cli
     self.numero = numero
     self.validade = validade
     self.cvv = cvv
@@ -15,7 +15,7 @@ class Cartao:
   def to_dict(self) -> dict[str, Any]:
     return {
       "id_cartao": self.id_cartao,
-      "id_usr": self.id_usr,
+      "id_cli": self.id_cli,
       "numero": self.numero,
       "validade": self.validade,
       "cvv":self.cvv,
@@ -25,7 +25,7 @@ class Cartao:
     }
   
   def to_tuple(self) -> tuple[int, str, str, str, float,Optional[int]]:
-    return (self.numero, self.validade, self.cvv, self.bandeira, self.valor, self.id_usr)
+    return (self.numero, self.validade, self.cvv, self.bandeira, self.valor, self.id_cli)
   
   @staticmethod
   def from_db(linha:tuple) -> Cartao:
@@ -35,7 +35,7 @@ class Cartao:
       cvv=linha[2],
       bandeira=linha[3],
       valor=linha[4],
-      id_usr=linha[5],
+      id_cli=linha[5],
       id_cartao=linha[6]
     )
   
@@ -45,8 +45,8 @@ class Cartao:
     return self._id_cartao
 
   @property 
-  def id_usr(self) -> Optional[int]:
-    return self._id_usr
+  def id_cli(self) -> Optional[int]:
+    return self._id_cli
 
   @property    
   def numero(self) -> int:
@@ -75,11 +75,11 @@ class Cartao:
       raise TypeError(f"A entrada deve ser um numero inteiro")
     self._id_cartao = id_cartao
   
-  @id_usr.setter
-  def id_usr(self, id_usr:Optional[int]) -> None:
-    if(id_usr is not None and not isinstance(id_usr,int)):
+  @id_cli.setter
+  def id_cli(self, id_cli:Optional[int]) -> None:
+    if(id_cli is not None and not isinstance(id_cli,int)):
       raise TypeError(f"A entrada deve ser um numero inteiro")
-    self._id_usr = id_usr
+    self._id_cli = id_cli
   
   @numero.setter
   def numero(self, numero:int) -> None:

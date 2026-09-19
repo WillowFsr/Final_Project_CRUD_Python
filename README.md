@@ -18,3 +18,4 @@ Final_Project_CRUD_Python/
     ├── main.py           # Ponto de entrada e orquestração do sistema
     └── requirements.txt  # requisitos para facilitar a instalação de dependências
 ```
+---
