@@ -2,7 +2,7 @@ from database.connection import  Base
 from sqlalchemy import Column,String, Integer, ForeignKey
 import sqlalchemy
 
-class cliente(Base) :
+class Cliente(Base) :
   __tablename__ = 'cliente'
 
   id_cli = Column(Integer,primary_key=True, autoincrement=True)
