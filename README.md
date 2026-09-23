@@ -12,7 +12,7 @@ A aplicação adota uma separação clara de responsabilidades no diretório `pr
 Final_Project_CRUD_Python/
 └── project/
     ├── infra/            # Pasta de Infraestrutura do Bnco de Dados
-        ├── database/     # Configuração de conexão com PostgreSQL
+        ├── configs/      # Configuração de conexão com PostgreSQL
         ├── entites/      # Mapeamento das tabelas
         ├── repository/   # Ponte de persistência 
     ├── domain/           # Entidades e regras de negócio puras 
