@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import InterfaceError, DatabaseError
 from sqlalchemy.ext.declarative import declarative_base
 
-load_dotenv(r"project\.env")
+load_dotenv(r"project\.env")  
 
 #the engine its a lazy starter, it dont starts the connection automatically, so.. dont need to check, only need on session
 engine = create_engine(f"postgresql+psycopg://{getenv('BD_USR')}:{getenv('DB_PASSWORD')}@{getenv('DB_HOST')}:{getenv('DB_PORT')}/{getenv('DB_NAME')}")
