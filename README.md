@@ -11,11 +11,12 @@ A aplicação adota uma separação clara de responsabilidades no diretório `pr
 ```text
 Final_Project_CRUD_Python/
 └── project/
-    ├── database/         # Configuração de conexão e comunicação direta com PostgreSQL (Psycopg 3)
-    ├── domain/           # Entidades e regras de negócio puras (Produto, Cliente, Carrinho, etc.)
-    ├── repository/       # Ponte de persistência (mapeia banco de dados <-> entidades do domínio)
+    ├── infra/            # Pasta de Infraestrutura do Bnco de Dados
+        ├── database/     # Configuração de conexão com PostgreSQL
+        ├── entites/      # Mapeamento das tabelas
+        ├── repository/   # Ponte de persistência 
+    ├── domain/           # Entidades e regras de negócio puras 
     ├── .env.exemple      # Modelo de variáveis de ambiente
     ├── main.py           # Ponto de entrada e orquestração do sistema
-    └── requirements.txt  # requisitos para facilitar a instalação de dependências
+    └── requirements.txt  # Requisitos para facilitar a instalação de dependências
 ```
-w---
