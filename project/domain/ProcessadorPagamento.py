@@ -1,9 +1,9 @@
 from __future__ import annotations
 from typing import Optional
-from Cliente import Cliente
-from Cartao import Cartao
-from Carrinho import Carrinho
-from Produto import Produto
+from project.domain.Cliente import Cliente
+from project.domain.Cartao import Cartao
+from project.domain.Carrinho import Carrinho
+from project.domain.Produto import Produto
 
 class ProcessadorPagamento:
   @staticmethod

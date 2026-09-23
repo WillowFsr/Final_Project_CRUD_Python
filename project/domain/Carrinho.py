@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Any, Optional
 from Produto import Produto
-from ProdutoCarrinho import ProdutoCarrinho
+from project.domain.ProdutoCarrinho import ProdutoCarrinho
 
 class Carrinho:
   def __init__(self):

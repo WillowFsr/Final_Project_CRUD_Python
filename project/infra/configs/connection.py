@@ -4,11 +4,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
-load_dotenv(r'project\.env')
+load_dotenv(r'.env')
 
-class BDConnectionHandler:
+class DBConnectionHandler:
   def __init__(self) -> None:
-    self.__connection_string = f"postgresql+psycopg://{getenv('BD_USR')}:{getenv('DB_PASSWORD')}@{getenv('DB_HOST')}:{getenv('DB_PORT')}/{getenv('DB_NAME')}"
+    self.__connection_string = f"postgresql+psycopg://{getenv('DB_USER')}:{getenv('DB_PASSWORD')}@{getenv('DB_HOST')}:{getenv('DB_PORT')}/{getenv('DB_NAME')}"
 
     self.__engine = self._create_database_engine()
     self.session = None
@@ -22,7 +22,7 @@ class BDConnectionHandler:
   def __enter__(self):
     session_make = sessionmaker(bind=self.__engine)
     self.session = session_make()
-    return self
+    return self 
 
   #when finished the code, it will close session
   def __exit__(self,exc_type,exc_val, exc_tb):
@@ -35,7 +35,6 @@ class BDConnectionHandler:
         self.session.close()
 
     
-
   #if we need use raw sql(most cases no), just in case
   def get_engine(self):
     return self.__engine

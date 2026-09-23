@@ -1,4 +1,4 @@
-from Produto import Produto
+from project.domain.Produto import Produto
 from typing import Any
 
 class ProdutoCarrinho:

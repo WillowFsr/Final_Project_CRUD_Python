@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import Optional, Any
-from Usuario import Usuario
-from Cartao import Cartao
-from Carrinho import Carrinho
+from project.domain.Usuario import Usuario
+from project.domain.Cartao import Cartao
+from project.domain.Carrinho import Carrinho
  
 class Cliente(Usuario):
   def __init__(self, nome: str, idade:int , endereco:str, nacionalidade:str, id_cli: Optional[int] = None):
