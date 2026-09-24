@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import Optional,Any
 from decimal import Decimal
+from datetime import date
 
 class Cartao:
-  def __init__(self, numero: int, validade: str, cvv: str, bandeira: str, saldo:Decimal,id_cli: Optional[int] = None, id_cartao:Optional[int] = None ):
+  def __init__(self, numero: int, validade: date, cvv: str, bandeira: str, saldo:Decimal,id_cli: Optional[int] = None, id_cartao:Optional[int] = None ):
     self.id_cartao = id_cartao  
     self.id_cli = id_cli
     self.numero = numero
@@ -54,7 +55,7 @@ class Cartao:
     return self._numero
 
   @property
-  def validade(self) -> str:
+  def validade(self) -> date:
     return self._validade
 
   @property    
@@ -91,11 +92,9 @@ class Cartao:
     self._numero = numero
   
   @validade.setter
-  def validade(self, validade:str) -> None:
-    if(not isinstance(validade, str)):
-      raise TypeError(f"A entrada deve ser um texto (string)")
-    if(not validade.strip()):
-      raise ValueError(f"A validade do cartao nao pode ser vazia")
+  def validade(self, validade: date) -> None:
+    if not isinstance(validade, date):
+      raise TypeError("A validade deve ser do tipo date")
     self._validade = validade
   
   @cvv.setter

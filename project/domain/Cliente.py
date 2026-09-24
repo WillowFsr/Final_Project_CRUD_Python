@@ -33,7 +33,7 @@ class Cliente(Usuario):
       raise ValueError(f"Cartao já inserido")
     
     if(self.id_cli is not None):
-      cartao.id_usr = self.id_cli
+      cartao.id_cli = self.id_cli
     
     self.cartoes.append(cartao)
     

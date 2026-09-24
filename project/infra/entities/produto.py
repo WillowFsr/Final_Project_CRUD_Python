@@ -7,8 +7,8 @@ from typing import Optional
 class Produto(Base):
   __tablename__ = 'produto'
 
-  id_prod:Mapped[int] = mapped_column(primary_key=True, autoincrement= True)
-  nome:Mapped[str] = mapped_column()
-  preco:Mapped[Decimal] = mapped_column(Numeric)
-  descricao:Mapped[Optional[str]] = mapped_column(nullable=True)
-  estoque:Mapped[int] = mapped_column(default=0)
+  id_prod:Mapped[int] = mapped_column(Integer,primary_key=True, autoincrement= True)
+  nome:Mapped[str] = mapped_column(String, nullable=False)
+  preco:Mapped[Decimal] = mapped_column(Numeric, nullable=False)
+  descricao:Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+  estoque:Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
