@@ -1,3 +1,4 @@
+from __future__ import annotations
 from project.domain.Produto import Produto
 from typing import Any
 

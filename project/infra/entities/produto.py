@@ -1,3 +1,4 @@
+from __future__ import annotations
 from project.infra.configs.base import Base
 from sqlalchemy import String, Integer, Numeric, Text, SmallInteger
 from sqlalchemy.orm import mapped_column, Mapped
