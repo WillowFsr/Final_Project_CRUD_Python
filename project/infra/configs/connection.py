@@ -20,19 +20,23 @@ class DBConnectionHandler:
 
   #when this class is created, it will run this code, creating a new session and returning actual context of it for use, after this, session will be return as None
   def __enter__(self):
-    session_make = sessionmaker(bind=self.__engine)
-    self.session = session_make()
+    LocalSession = sessionmaker(bind=self.__engine)
+    self.session = LocalSession()
     return self 
 
   #when finished the code, it will close session
   def __exit__(self,exc_type,exc_val, exc_tb):
-    if exc_type:
-      try:
-        pass
-      except:
-        pass
-      finally:
-        self.session.close()
+    try:
+      if exc_type:
+        self.session.rollback()
+      else:
+        self.session.commit()
+    except Exception as e:
+      print(f"Ocorreu um erro: {e}")
+      self.session.rollback()
+      raise e
+    finally:
+      self.session.close()
 
     
   #if we need use raw sql(most cases no), just in case

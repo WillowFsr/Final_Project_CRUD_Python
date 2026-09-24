@@ -1,4 +1,5 @@
 from __future__ import annotations
+from decimal import Decimal
 from typing import Optional
 from project.domain.Cliente import Cliente
 from project.domain.Cartao import Cartao
@@ -30,7 +31,7 @@ class ProcessadorPagamento:
     if (cliente_cartao is None):
       raise ValueError(f"Catao nao encontrado")
 
-    total_compra:float = carrinho.calcular_total()
+    total_compra:Decimal = carrinho.calcular_total()
 
     if(total_compra > cliente_cartao.valor):
       raise ValueError(f"Saldo insuficiente para a compra")
