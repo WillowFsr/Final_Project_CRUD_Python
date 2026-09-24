@@ -1,8 +1,9 @@
 from __future__ import annotations #it serves to from db method
 from typing import Optional, Any
+from decimal import Decimal
 
 class Produto:
-  def __init__(self, nome: str, preco: float, descricao:str, estoque:int, id_prod: Optional[int] = None ):
+  def __init__(self, nome: str, preco: Decimal, descricao:str, estoque:int, id_prod: Optional[int] = None ):
     self.id_prod = id_prod
     self.nome = nome
     self.preco = preco
@@ -46,7 +47,7 @@ class Produto:
     return self._nome
 
   @property
-  def preco(self) -> float:
+  def preco(self) -> Decimal:
     return self._preco
   
   @property
@@ -71,9 +72,9 @@ class Produto:
     self._nome = nome  
 
   @preco.setter
-  def preco(self, preco: float) -> None:
-    if(not isinstance(preco, (int,float))):
-      raise TypeError(f"A entrada deveria ser um número(int ou float)")
+  def preco(self, preco: Decimal) -> None:
+    if(not isinstance(preco, Decimal)):
+      raise TypeError(f"A entrada deveria ser um número")
     if (preco <0):
       raise ValueError(f"A entrada não pode ser negativa")
     
