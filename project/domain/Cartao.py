@@ -1,15 +1,16 @@
 from __future__ import annotations
 from typing import Optional,Any
+from decimal import Decimal
 
 class Cartao:
-  def __init__(self, numero: int, validade: str, cvv: str, bandeira: str, valor:float,id_cli: Optional[int] = None, id_cartao:Optional[int] = None ):
+  def __init__(self, numero: int, validade: str, cvv: str, bandeira: str, saldo:Decimal,id_cli: Optional[int] = None, id_cartao:Optional[int] = None ):
     self.id_cartao = id_cartao  
     self.id_cli = id_cli
     self.numero = numero
     self.validade = validade
     self.cvv = cvv
     self.bandeira = bandeira
-    self.valor = valor
+    self.saldo = saldo
 
   # - > Methods
   def to_dict(self) -> dict[str, Any]:
@@ -20,12 +21,12 @@ class Cartao:
       "validade": self.validade,
       "cvv":self.cvv,
       "bandeira": self.bandeira,
-      "valor": self.valor
+      "saldo": self.saldo
 
     }
   
   def to_tuple(self) -> tuple[int, str, str, str, float,Optional[int]]:
-    return (self.numero, self.validade, self.cvv, self.bandeira, self.valor, self.id_cli)
+    return (self.numero, self.validade, self.cvv, self.bandeira, self.saldo, self.id_cli)
   
   @staticmethod
   def from_db(linha:tuple) -> Cartao:
@@ -34,7 +35,7 @@ class Cartao:
       validade=linha[1],
       cvv=linha[2],
       bandeira=linha[3],
-      valor=linha[4],
+      saldo=linha[4],
       id_cli=linha[5],
       id_cartao=linha[6]
     )
@@ -65,8 +66,8 @@ class Cartao:
     return self._bandeira
 
   @property 
-  def valor(self) -> float:
-    return self._valor
+  def saldo(self) -> Decimal:
+    return self._saldo
 
   # #Setters
   @id_cartao.setter
@@ -113,10 +114,10 @@ class Cartao:
       raise ValueError(f"A bandeira do cartao nao pode ser nula")
     self._bandeira = bandeira
   
-  @valor.setter
-  def valor(self, valor:float|int) -> None:
-    if(not isinstance(valor, (float,int))):
+  @saldo.setter
+  def saldo(self, saldo:Decimal) -> None:
+    if(not isinstance(saldo, Decimal)):
       raise TypeError(f"Entrada incorreta, esperado um número")
-    if(valor <0):
+    if(saldo <0):
       raise ValueError(f"O dinheiro numa conta não pode ser menor que zero")
-    self._valor = float(valor)
+    self._saldo = saldo

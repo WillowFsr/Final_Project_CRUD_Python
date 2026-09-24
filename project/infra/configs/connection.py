@@ -42,6 +42,3 @@ class DBConnectionHandler:
   #if we need use raw sql(most cases no), just in case
   def get_engine(self):
     return self.__engine
-
-
-
