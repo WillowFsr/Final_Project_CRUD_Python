@@ -1,5 +1,5 @@
   from __future__ import annotations
-  from infra.configs.base import Base
+  from project.infra.configs.base import Base
   from sqlalchemy.orm import func, Mapped, mapped_column, relationship
   from sqlalchemy import DateTime, Integer, ForeignKey, Numeric
   from datetime import datetime

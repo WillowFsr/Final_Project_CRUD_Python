@@ -1,5 +1,5 @@
 from __future__ import annotations
-from infra.configs.base import Base
+from project.infra.configs.base import Base
 from sqlalchemy import String, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
