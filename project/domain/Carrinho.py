@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Any, Optional
 from Produto import Produto
 from project.domain.ProdutoCarrinho import ProdutoCarrinho
+from decimal import Decimal
 
 class Carrinho:
   def __init__(self):
@@ -47,8 +48,8 @@ class Carrinho:
   def limpar_carrinho(self) -> None:
     self._produto_carrinho.clear()
   
-  def calcular_total(self) -> float:
-    valor_total:float = 0.0
+  def calcular_total(self) -> Decimal:
+    valor_total:Decimal = 0.0
     for produtocarrinho in self._produto_carrinho:
       valor_total += produtocarrinho.subtotal_produtos()
     return valor_total
