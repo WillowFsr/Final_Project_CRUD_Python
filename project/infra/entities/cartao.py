@@ -10,7 +10,7 @@ class Cartao(Base):
   __tablename__ = 'cartao'
 
   id_cartao:Mapped[int] = mapped_column(Integer,primary_key=True, autoincrement=True,unique=True)
-  id_cli:Mapped[int] = mapped_column(ForeignKey('cliente.id_cli'), nullable=True)
+  id_cli: Mapped[Optional[int]] = mapped_column(ForeignKey('cliente.id_cli'), nullable=True)
   numero:Mapped[int] = mapped_column(Integer, nullable=False)
   validade:Mapped[date] = mapped_column(Date, nullable=False, insert_default=func.current_date())
   cvv:Mapped[str] = mapped_column(String, nullable=False)

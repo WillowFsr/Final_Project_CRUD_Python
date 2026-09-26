@@ -17,14 +17,7 @@ class Cliente(Usuario):
     dados["id_cli"] = self.id_cli
     dados["cartoes"] = [cartao.to_dict() for cartao in self.cartoes]
     dados["carrinho"] = self.carrinho.to_dict() if hasattr(self.carrinho, "to_dict") else []
-    return dados
-
-  def to_tuple(self) -> tuple[str, int, str, str, Optional[int]]:
-    return (self.nome, self.idade, self.endereco, self.nacionalidade, self.id_cli)
-
-  @staticmethod
-  def from_db(linha: tuple) -> Cliente:
-    return Cliente(id_cli=linha[0], nome=linha[1], idade=linha[2], endereco=linha[3], nacionalidade=linha[4])    
+    return dados  
   
   def inserir_cartao(self, cartao:Cartao) -> None:
     if(not isinstance(cartao, Cartao)):

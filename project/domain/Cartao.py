@@ -25,21 +25,6 @@ class Cartao:
       "saldo": self.saldo
     }
   
-  def to_tuple(self) -> tuple[str, date, str, str, Decimal, Optional[int]]:
-    return (self.numero, self.validade, self.cvv, self.bandeira, self.saldo, self.id_cli)
-  
-  @staticmethod
-  def from_db(linha: tuple) -> Cartao:
-    return Cartao(
-      numero=linha[0],
-      validade=linha[1],
-      cvv=linha[2],
-      bandeira=linha[3],
-      saldo=linha[4],
-      id_cli=linha[5],
-      id_cartao=linha[6]
-    )
-  
   #Getters
   @property
   def id_cartao(self) -> Optional[int]:
