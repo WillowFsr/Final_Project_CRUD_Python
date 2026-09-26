@@ -49,7 +49,7 @@ class Carrinho:
     self._produto_carrinho.clear()
   
   def calcular_total(self) -> Decimal:
-    valor_total:Decimal = 0.0
+    valor_total:Decimal = Decimal("0.00")
     for produtocarrinho in self._produto_carrinho:
       valor_total += produtocarrinho.subtotal_produtos()
     return valor_total

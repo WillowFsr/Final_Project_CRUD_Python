@@ -1,6 +1,7 @@
 from __future__ import annotations
 from project.domain.Produto import Produto
 from typing import Any
+from decimal import Decimal
 
 class ProdutoCarrinho:
   def __init__(self, produto:Produto,quantidade:int):
@@ -16,7 +17,7 @@ class ProdutoCarrinho:
       "subtotal": self.subtotal_produtos()
         }
   
-  def subtotal_produtos(self) -> float:
+  def subtotal_produtos(self) -> Decimal:
     return self._produto.preco * self._quantidade
 
   @property

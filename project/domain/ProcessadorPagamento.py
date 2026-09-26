@@ -23,7 +23,7 @@ class ProcessadorPagamento:
     #finding Cliente Cartao
     cliente_cartao:Optional[Cartao] = None
     for cartao in cliente.cartoes:
-      if (cartao.numero == id_cartao):
+      if (cartao.id_cartao == id_cartao):
         cliente_cartao = cartao
         break
     
