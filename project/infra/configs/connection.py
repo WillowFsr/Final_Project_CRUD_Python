@@ -3,7 +3,6 @@ from os import getenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-
 load_dotenv(r'.env')
 
 class DBConnectionHandler:
@@ -24,7 +23,7 @@ class DBConnectionHandler:
     self.session = LocalSession()
     return self 
 
-  #when finished the code, it will close session
+  #when finished the code, it will close session and do the commit automatically when exit >,<
   def __exit__(self,exc_type,exc_val, exc_tb):
     try:
       if exc_type:
