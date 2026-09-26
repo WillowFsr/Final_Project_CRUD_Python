@@ -38,7 +38,8 @@ class Produto_Repository:
         return False
       
       db.session.delete(produto_entity)
-      return True
+    
+    return True
 
   def search(self, produto_id:int) -> Produto_Domain | None:
     if (not isinstance(produto_id, int)):

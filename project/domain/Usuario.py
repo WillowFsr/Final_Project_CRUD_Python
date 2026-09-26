@@ -17,15 +17,6 @@ class Usuario(ABC):
       "endereco":self.endereco,
       "nacionalidade":self.nacionalidade
     }
-
-  def to_tuple(self) -> tuple[str, int, str, str]:
-    return (self.nome, self.idade, self.endereco, self.nacionalidade)
-  
-  #this class is abstract, so it cannot implement from_db, only her childs
-  @staticmethod
-  @abstractmethod
-  def from_db(linha: tuple) -> Usuario:
-    pass
   
   def maior_de_idade(self) -> bool:
     return self.idade>=18
