@@ -1,18 +1,25 @@
 from __future__ import annotations
-from project.infra.configs.base import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, Numeric
+
 from decimal import Decimal
 
+from project.infra.configs.base import Base
+from sqlalchemy import ForeignKey, Integer, Numeric
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+
 class Item_Historico_Compra(Base):
-  __tablename__ = 'item_historico'
+  __tablename__ = "item_historico"
 
-  id_item:Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, unique=True)
-  id_historico:Mapped[int] = mapped_column(ForeignKey('historico_compra.id_historico'), nullable=False)
-  id_prod:Mapped[int] = mapped_column(ForeignKey('produto.id_prod'), nullable=False)
+  id_item: Mapped[int] = mapped_column(Integer,primary_key=True,autoincrement=True,)
 
-  quantidade:Mapped[int] = mapped_column(Integer, nullable=False)
-  preco_momento: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+  id_historico: Mapped[int] = mapped_column(ForeignKey("historico_compra.id_historico",ondelete="CASCADE",),nullable=False,)
 
-  historico:Mapped["Historico_Compra"] = relationship("Historico_Compra", back_populates="itens")
-  produto:Mapped["Produto"] = relationship("Produto",back_populates="item_historico")
+  id_prod: Mapped[int] = mapped_column(ForeignKey("produto.id_prod"),nullable=False,)
+
+  quantidade: Mapped[int] = mapped_column(Integer,nullable=False,)
+
+  preco_momento: Mapped[Decimal] = mapped_column(Numeric(10, 2),nullable=False,)
+
+  historico: Mapped["Historico_Compra"] = relationship("Historico_Compra",back_populates="itens",)
+  
+  produto: Mapped["Produto"] = relationship("Produto",back_populates="item_historico",)

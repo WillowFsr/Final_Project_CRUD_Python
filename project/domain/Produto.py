@@ -22,8 +22,8 @@ class Produto:
       "descricao": self.descricao 
     } 
 
-  def desconto(self,porcentagem_desconto:int |float) -> None:
-    if (not isinstance(porcentagem_desconto,(int, float) )):
+  def desconto(self,porcentagem_desconto:Decimal) -> None:
+    if (not isinstance(porcentagem_desconto,Decimal )):
       raise TypeError(f"A entrada deve ser um número  ")
     if (porcentagem_desconto <0 ):
       raise ValueError(f"Valor do desconto não pode ser menor que 0")
@@ -31,8 +31,8 @@ class Produto:
     fator_desconto = 1 -(porcentagem_desconto/100)
     self.preco = self.preco * fator_desconto
 
-  def aumento(self, porcentagem_aumento:int |float) -> None:
-    if (not isinstance(porcentagem_aumento,(int,float))):
+  def aumento(self, porcentagem_aumento:Decimal) -> None:
+    if (not isinstance(porcentagem_aumento, Decimal)):
       raise TypeError(f"A entrada deve ser um número ")
     if (porcentagem_aumento <0 ):
       raise ValueError(f"Valor do aumento não pode ser 0 ou menos")
