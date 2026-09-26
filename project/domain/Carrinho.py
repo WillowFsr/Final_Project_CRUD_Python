@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Any, Optional
-from Produto import Produto
+from project.domain.Produto import Produto
 from project.domain.ProdutoCarrinho import ProdutoCarrinho
 from decimal import Decimal
 

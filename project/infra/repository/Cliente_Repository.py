@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional
-from project.infra.configs.connection import DBConnectionHandler
+from infra.configs.connection import DBConnectionHandler
 from project.domain.Cliente import Cliente as Cliente_Domain
 from project.infra.entities.cliente import Cliente as Cliente_Entity
 
@@ -54,7 +54,7 @@ class Cliente_Repository:
       return self.from_db(cliente_busca)
   
   def delete(self, cli_id:int) -> bool:
-    if (not isinstance(cliente_id,int)):
+    if (not isinstance(cli_id,int)):
       return False
     if (cli_id <1):
       return False

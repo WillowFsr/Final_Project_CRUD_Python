@@ -33,10 +33,10 @@ class ProcessadorPagamento:
 
     total_compra:Decimal = carrinho.calcular_total()
 
-    if(total_compra > cliente_cartao.valor):
+    if(total_compra > cliente_cartao.saldo):
       raise ValueError(f"Saldo insuficiente para a compra")
     
-    cliente_cartao.valor -= total_compra
+    cliente_cartao.saldo -= total_compra
 
     #changing Produto.quantidade to deduce stock
     for produto_carrinho in carrinho._produto_carrinho:
