@@ -11,26 +11,14 @@ class Cliente_Repository:
 
   @staticmethod
   def to_tuple(cliente_domain: Cliente_Domain) -> tuple[str, int, str, str, Optional[int]]:
-    return (
-      cliente_domain.nome,
-      cliente_domain.idade,
-      cliente_domain.endereco,
-      cliente_domain.nacionalidade,
-      cliente_domain.id_cli
-    )
+    return (cliente_domain.nome,cliente_domain.idade,cliente_domain.endereco,cliente_domain.nacionalidade,cliente_domain.id_cli)
 
   @staticmethod
   def from_db(cliente_entity: Cliente_Entity) -> Cliente_Domain | None:
     if not isinstance(cliente_entity, Cliente_Entity):
       return None
 
-    cliente = Cliente_Domain(
-      nome=cliente_entity.nome,
-      idade=cliente_entity.idade,
-      endereco=cliente_entity.endereco,
-      nacionalidade=cliente_entity.nacionalidade,
-      id_cli=cliente_entity.id_cli
-    )
+    cliente = Cliente_Domain(nome=cliente_entity.nome,idade=cliente_entity.idade,endereco=cliente_entity.endereco,nacionalidade=cliente_entity.nacionalidade,id_cli=cliente_entity.id_cli)
 
     from project.infra.repository.Cartao_Repository import Cartao_Repository
     from project.infra.repository.Carrinho_Repository import Carrinho_Repository

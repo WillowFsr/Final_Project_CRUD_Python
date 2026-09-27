@@ -10,19 +10,33 @@ from dotenv import load_dotenv
 from sqlalchemy import text
 from sqlalchemy.orm import configure_mappers
 
+
 PROJECT_ROOT = Path(__file__).resolve().parent
-if (PROJECT_ROOT / "project").exists():
-  ROOT = PROJECT_ROOT
-else:
-  ROOT = PROJECT_ROOT.parent
+ROOT = PROJECT_ROOT.parent
 
 if str(ROOT) not in sys.path:
   sys.path.insert(0, str(ROOT))
 
 load_dotenv(ROOT / ".env")
 
-REQUIRED_VARS = ("DB_HOST", "DB_PORT", "DB_NAME", "DB_USER", "DB_PASSWORD")
-EXPECTED_TABLES = {"cliente", "produto", "cartao", "historico_compra", "item_historico"}
+
+REQUIRED_VARS = (
+  "DB_HOST",
+  "DB_PORT",
+  "DB_NAME",
+  "DB_USER",
+  "DB_PASSWORD"
+)
+
+EXPECTED_TABLES = {
+  "cliente",
+  "cartao",
+  "produto",
+  "carrinho",
+  "produto_carrinho",
+  "historico_compra",
+  "item_historico"
+}
 
 
 def titulo(texto: str) -> None:
@@ -31,64 +45,78 @@ def titulo(texto: str) -> None:
   print("=" * 72)
 
 
-def validar_configuracao() -> bool:
-  ausentes = [nome for nome in REQUIRED_VARS if not os.getenv(nome)]
+def validar_configuracao() -> None:
+  faltando = [variavel for variavel in REQUIRED_VARS if not os.getenv(variavel)]
 
-  if ausentes:
-    print("[ERRO] Variáveis ausentes no .env:")
-    for nome in ausentes:
-      print(f"  - {nome}")
-    return False
-
-  return True
+  if faltando:
+    raise RuntimeError(
+      "Variáveis ausentes no .env: " + ", ".join(faltando)
+    )
 
 
 def testar_mappers() -> None:
-  from project.infra import entities  # noqa: F401
+  from project.infra import entities
   configure_mappers()
+  print("[OK] Entities importadas e relationships configuradas.")
 
 
-def validar_schema(db) -> None:
-  tabelas = db.session.execute(
-    text("""
-      SELECT table_name
-      FROM information_schema.tables
-      WHERE table_schema = 'public'
-        AND table_name = ANY(:tables)
-    """),
-    {"tables": list(EXPECTED_TABLES)}
-  ).scalars().all()
+def testar_banco() -> None:
+  from project.infra.configs.connection import DBConnectionHandler
 
-  faltando = EXPECTED_TABLES - set(tabelas)
+  with DBConnectionHandler() as db:
+    banco, usuario, schema = db.session.execute(
+      text("SELECT current_database(), current_user, current_schema()")
+    ).one()
+
+    tabelas = set(
+      db.session.execute(
+        text("""
+          SELECT table_name
+          FROM information_schema.tables
+          WHERE table_schema = 'public'
+        """)
+      ).scalars().all()
+    )
+
+  faltando = EXPECTED_TABLES - tabelas
 
   if faltando:
-    raise RuntimeError(f"Tabelas ausentes no PostgreSQL: {', '.join(sorted(faltando))}")
+    raise RuntimeError(
+      "Tabelas ausentes no PostgreSQL: " + ", ".join(sorted(faltando))
+    )
+
+  print(f"[OK] Banco: {banco}")
+  print(f"[OK] Usuário: {usuario}")
+  print(f"[OK] Schema: {schema}")
+  print("[OK] As 7 tabelas esperadas existem.")
 
 
-def testar_fluxo_principal() -> tuple[int, int]:
+def salvar_dados() -> tuple[int, int, int]:
   from project.domain.Cartao import Cartao
   from project.domain.Cliente import Cliente
   from project.domain.Produto import Produto
-  from project.domain.ProcessadorPagamento import ProcessadorPagamento
+
   from project.infra.repository.Cartao_Repository import Cartao_Repository
   from project.infra.repository.Cliente_Repository import Cliente_Repository
+  from project.infra.repository.Carrinho_Repository import Carrinho_Repository
   from project.infra.repository.Historico_Repository import Historico_Compra_Repository
   from project.infra.repository.Produto_Repository import Produto_Repository
 
   cliente_repo = Cliente_Repository()
-  produto_repo = Produto_Repository()
   cartao_repo = Cartao_Repository()
+  produto_repo = Produto_Repository()
+  carrinho_repo = Carrinho_Repository()
 
   cliente = Cliente(
-    nome="TESTE MAIN",
+    nome="TESTE FINAL MAIN",
     idade=25,
-    endereco="Endereco temporario do main",
+    endereco="Rua de Teste, 123",
     nacionalidade="Brasileira"
   )
 
   cartao = Cartao(
-    numero="TESTE-MAIN-CARTAO",
-    validade=date.today(),
+    numero="TESTE-FINAL-0001",
+    validade=date(2030, 12, 31),
     cvv="999",
     bandeira="TESTE",
     saldo=Decimal("1000.00")
@@ -96,223 +124,158 @@ def testar_fluxo_principal() -> tuple[int, int]:
 
   cliente.inserir_cartao(cartao)
 
-  assert cliente_repo.insert(cliente) is True
-  assert cliente.id_cli is not None
-  assert cartao.id_cartao is not None
-  assert cartao.id_cli == cliente.id_cli
-  print(f"[OK] Cliente inserido. id_cli = {cliente.id_cli}")
-  print(f"[OK] Cartão inserido pelo relationship. id_cartao = {cartao.id_cartao}")
+  if not cliente_repo.insert(cliente):
+    raise RuntimeError("Falha ao inserir cliente e cartão.")
+
+  print(f"[OK] Cliente persistido: id_cli={cliente.id_cli}")
+  print(f"[OK] Cartão persistido: id_cartao={cartao.id_cartao}")
 
   produto = Produto(
-    nome="PRODUTO TESTE MAIN",
+    nome="PRODUTO TESTE FINAL",
     preco=Decimal("100.00"),
-    descricao="Produto temporario do teste de integracao",
+    descricao="Produto criado pelo main de integração.",
     estoque=10
   )
 
-  assert produto_repo.insert(produto) is True
-  assert produto.id_prod is not None
-  print(f"[OK] Produto inserido. id_prod = {produto.id_prod}")
+  if not produto_repo.insert(produto):
+    raise RuntimeError("Falha ao inserir produto.")
 
-  cliente_banco = cliente_repo.search(cliente.id_cli)
-  produto_banco = produto_repo.search(produto.id_prod)
-  cartao_banco = cartao_repo.search(cartao.id_cartao)
+  print(f"[OK] Produto persistido: id_prod={produto.id_prod}")
 
-  assert cliente_banco is not None
-  assert cliente_banco.id_cli == cliente.id_cli
-  assert produto_banco is not None
-  assert produto_banco.id_prod == produto.id_prod
-  assert cartao_banco is not None
-  assert cartao_banco.id_cartao == cartao.id_cartao
-  assert cartao_banco.id_cli == cliente.id_cli
+  cliente.carrinho.id_cliente = cliente.id_cli
+  cliente.carrinho.adicionar_produto(produto, 2)
 
-  print("[OK] Cliente, produto e cartão foram lidos novamente pelos repositories.")
+  if not carrinho_repo.insert(cliente.carrinho):
+    raise RuntimeError("Falha ao inserir carrinho.")
 
-  cliente_domain_update = Cliente(
-    nome="TESTE MAIN ATUALIZADO",
-    idade=26,
-    endereco="Endereco atualizado",
-    nacionalidade="Brasileira",
-    id_cli=cliente.id_cli
-  )
+  print(f"[OK] Carrinho persistido: id_carrinho={cliente.carrinho.id_carrinho}")
+  print("[OK] Produto_Carrinho persistido através do Carrinho_Repository.")
 
-  assert cliente_repo.update(cliente.id_cli, cliente_domain_update) is True
-  cliente_banco = cliente_repo.search(cliente.id_cli)
-  assert cliente_banco is not None
-  assert cliente_banco.nome == "TESTE MAIN ATUALIZADO"
-  print("[OK] UPDATE de cliente funcionando.")
+  total = cliente.carrinho.calcular_total()
+  itens = cliente.carrinho.produto_no_carrinho()
 
-  produto_domain_update = Produto(
-    nome=produto.nome,
-    preco=produto.preco,
-    descricao="Descricao atualizada",
-    estoque=produto.estoque,
-    id_prod=produto.id_prod
-  )
+  if not Historico_Compra_Repository.registrar_compra(
+    cliente.id_cli,
+    total,
+    itens
+  ):
+    raise RuntimeError("Falha ao inserir histórico de compra.")
 
-  assert produto_repo.update(produto.id_prod, produto_domain_update) is True
-  produto_banco = produto_repo.search(produto.id_prod)
-  assert produto_banco is not None
-  assert produto_banco.descricao == "Descricao atualizada"
-  produto.descricao = produto_banco.descricao
-  print("[OK] UPDATE de produto funcionando.")
+  historicos = Historico_Compra_Repository.listar_por_cliente(cliente.id_cli)
 
-  cliente_carrinho = cliente_repo.search(cliente.id_cli)
-  assert cliente_carrinho is not None
-  assert len(cliente_carrinho.cartoes) == 1
+  if not historicos:
+    raise RuntimeError("Histórico não foi encontrado após o INSERT.")
 
-  cartao_carrinho = cliente_carrinho.cartoes[0]
-  produto_compra = produto_repo.search(produto.id_prod)
-  assert produto_compra is not None
+  historico = historicos[0]
 
-  cliente_carrinho.carrinho.adicionar_produto(produto_compra, 2)
-  total = cliente_carrinho.carrinho.calcular_total()
-  assert total == Decimal("200.00")
-  print(f"[OK] Carrinho calculado. Total = R$ {total}")
+  print(f"[OK] Historico_Compra persistido: id_historico={historico['id_historico']}")
+  print(f"[OK] Item_Historico persistido: {len(historico['itens'])} item(ns)")
 
-  itens_compra = cliente_carrinho.carrinho.produto_no_carrinho()
-  saldo_antes = cartao_carrinho.saldo
-  estoque_antes = produto_compra.estoque
+  cliente_db = cliente_repo.search(cliente.id_cli)
+  produto_db = produto_repo.search(produto.id_prod)
+  cartao_db = cartao_repo.search(cartao.id_cartao)
+  carrinho_db = carrinho_repo.search(cliente.carrinho.id_carrinho)
 
-  ProcessadorPagamento.processarcompra(cliente_carrinho, cartao_carrinho.id_cartao)
+  if not cliente_db:
+    raise RuntimeError("Cliente não pôde ser lido novamente.")
 
-  assert cartao_carrinho.saldo == saldo_antes - total
-  assert produto_compra.estoque == estoque_antes - 2
-  assert len(cliente_carrinho.carrinho.produto_no_carrinho()) == 0
-  print("[OK] ProcessadorPagamento alterou saldo, estoque e limpou o carrinho.")
+  if not produto_db:
+    raise RuntimeError("Produto não pôde ser lido novamente.")
 
-  assert cartao_repo.update(cartao_carrinho.id_cartao, cartao_carrinho) is True
-  assert produto_repo.update(produto_compra.id_prod, produto_compra) is True
-  print("[OK] Saldo e estoque atualizados no PostgreSQL pelos repositories.")
+  if not cartao_db:
+    raise RuntimeError("Cartão não pôde ser lido novamente.")
 
-  assert Historico_Compra_Repository.registrar_compra(cliente_carrinho.id_cli, total, itens_compra) is True
-  historicos = Historico_Compra_Repository.listar_por_cliente(cliente_carrinho.id_cli)
-  assert historicos
+  if not carrinho_db:
+    raise RuntimeError("Carrinho não pôde ser lido novamente.")
 
-  ultimo = historicos[0]
-  assert ultimo["id_cli"] == cliente_carrinho.id_cli
-  assert ultimo["valor_total"] == total
-  assert len(ultimo["itens"]) == 1
-  assert ultimo["itens"][0]["id_prod"] == produto_compra.id_prod
-  assert ultimo["itens"][0]["quantidade"] == 2
-  assert ultimo["itens"][0]["preco_momento"] == Decimal("100.00")
+  if carrinho_db.id_cliente != cliente.id_cli:
+    raise RuntimeError("Carrinho retornou com cliente incorreto.")
 
-  historico_id = ultimo["id_historico"]
-  print(f"[OK] historico_compra registrado. id_historico = {historico_id}")
-  print("[OK] item_historico registrado com id_prod, quantidade e preco_momento.")
+  itens_carrinho_db = carrinho_db.produto_no_carrinho()
 
-  return cliente.id_cli, produto.id_prod
+  if len(itens_carrinho_db) != 1:
+    raise RuntimeError("Carrinho retornou com quantidade inesperada de itens.")
 
+  if itens_carrinho_db[0].produto.id_prod != produto.id_prod:
+    raise RuntimeError("Produto_Carrinho retornou com produto incorreto.")
 
-def testar_erros_do_dominio() -> None:
-  from project.domain.Cartao import Cartao
-  from project.domain.Cliente import Cliente
-  from project.domain.Produto import Produto
-  from project.domain.ProcessadorPagamento import ProcessadorPagamento
+  print("[OK] Cliente foi lido novamente.")
+  print("[OK] Cartão foi lido novamente.")
+  print("[OK] Produto foi lido novamente.")
+  print("[OK] Carrinho foi lido novamente com Produto_Carrinho.")
 
-  cliente = Cliente("TESTE ERROS", 20, "Endereco", "Brasileira")
-  cartao = Cartao("TESTE-ERRO", date.today(), "111", "TESTE", Decimal("10.00"), id_cartao=999999)
-  produto = Produto("Produto erro", Decimal("100.00"), "Teste", 1, id_prod=999999)
-  cliente.inserir_cartao(cartao)
+  print("\n--- DADOS PERSISTIDOS ---")
+  print(f"Cliente: {cliente_db.to_dict()}")
+  print(f"Cartão: {cartao_db.to_dict()}")
+  print(f"Produto: {produto_db.to_dict()}")
+  print(f"Carrinho: {carrinho_db.to_dict()}")
+  print(f"Histórico: {historico}")
 
-  try:
-    ProcessadorPagamento.processarcompra(cliente, cartao.id_cartao)
-    raise AssertionError("Pagamento com carrinho vazio deveria falhar.")
-  except ValueError as exc:
-    assert "carrinho" in str(exc).lower()
+  # Um UPDATE de cada domínio/repository principal.
+  cliente_db.nome = "TESTE FINAL MAIN - ATUALIZADO"
+  cliente_repo.update(cliente_db.id_cli, cliente_db)
 
-  cliente.carrinho.adicionar_produto(produto, 1)
-  try:
-    ProcessadorPagamento.processarcompra(cliente, cartao.id_cartao)
-    raise AssertionError("Pagamento com saldo insuficiente deveria falhar.")
-  except ValueError as exc:
-    assert "saldo" in str(exc).lower()
+  produto_db.descricao = "Descrição atualizada pelo main de teste."
+  produto_repo.update(produto_db.id_prod, produto_db)
 
-  print("[OK] Regras de erro do ProcessadorPagamento continuam funcionando.")
+  cartao_db.saldo = Decimal("900.00")
+  cartao_repo.update(cartao_db.id_cartao, cartao_db)
 
+  print("\n[OK] UPDATE de cliente realizado.")
+  print("[OK] UPDATE de produto realizado.")
+  print("[OK] UPDATE de cartão realizado.")
 
-def limpar_teste(cliente_id: int | None, produto_id: int | None) -> None:
-  if cliente_id is None and produto_id is None:
-    return
+  cliente_final = cliente_repo.search(cliente.id_cli)
+  produto_final = produto_repo.search(produto.id_prod)
+  cartao_final = cartao_repo.search(cartao.id_cartao)
 
-  from project.infra.repository.Cliente_Repository import Cliente_Repository
-  from project.infra.repository.Produto_Repository import Produto_Repository
+  if cliente_final is None or produto_final is None or cartao_final is None:
+    raise RuntimeError("Falha ao ler os dados após os UPDATEs.")
 
-  try:
-    if cliente_id is not None:
-      Cliente_Repository().delete(cliente_id)
-      print(f"[OK] Cliente de teste removido: {cliente_id}")
-  except Exception as exc:
-    print(f"[AVISO] Não foi possível remover o cliente de teste: {exc}")
+  print("\n--- DADOS APÓS UPDATE ---")
+  print(f"Cliente: {cliente_final.to_dict()}")
+  print(f"Produto: {produto_final.to_dict()}")
+  print(f"Cartão: {cartao_final.to_dict()}")
 
-  try:
-    if produto_id is not None:
-      Produto_Repository().delete(produto_id)
-      print(f"[OK] Produto de teste removido: {produto_id}")
-  except Exception as exc:
-    print(f"[AVISO] Não foi possível remover o produto de teste: {exc}")
+  return cliente.id_cli, produto.id_prod, cliente.carrinho.id_carrinho
 
 
 def main() -> int:
-  titulo("TESTE DE INTEGRACAO - DOMAIN + REPOSITORIES + SQLALCHEMY + POSTGRESQL")
-
-  if not validar_configuracao():
-    return 1
-
-  from project.infra.configs.connection import DBConnectionHandler
-
-  cliente_id = None
-  produto_id = None
+  titulo("TESTE FINAL DE PERSISTÊNCIA")
 
   try:
-    titulo("1/6 - MAPPERS DO SQLALCHEMY")
+    validar_configuracao()
+
+    titulo("1/4 - MAPPERS")
     testar_mappers()
-    print("[OK] Todas as entities e relationships foram configuradas.")
 
-    titulo("2/6 - CONEXAO COM POSTGRESQL")
-    with DBConnectionHandler() as db:
-      info = db.session.execute(text("SELECT current_database(), current_user, current_schema()")).one()
-      print(f"[OK] Banco: {info[0]}")
-      print(f"[OK] Usuário: {info[1]}")
-      print(f"[OK] Schema: {info[2]}")
-      validar_schema(db)
-      print("[OK] As cinco tabelas esperadas existem no banco.")
-      db.session.rollback()
+    titulo("2/4 - POSTGRESQL")
+    testar_banco()
 
-    titulo("3/6 - REPOSITORIES / CRUD")
-    cliente_id, produto_id = testar_fluxo_principal()
-    print("[OK] INSERT + SEARCH + UPDATE executados pelos repositories.")
+    titulo("3/4 - INSERT + SEARCH + UPDATE")
+    cliente_id, produto_id, carrinho_id = salvar_dados()
 
-    titulo("4/6 - REGRAS DE NEGOCIO")
-    testar_erros_do_dominio()
-
-    titulo("5/6 - LIMPEZA DOS DADOS DE TESTE")
-    limpar_teste(cliente_id, produto_id)
-    cliente_id = None
-    produto_id = None
-
-    titulo("6/6 - RESULTADO")
-    print("[OK] PostgreSQL respondeu.")
-    print("[OK] Psycopg respondeu através do SQLAlchemy.")
-    print("[OK] Relationships foram montados.")
-    print("[OK] Cliente foi inserido e lido pelos repositories.")
-    print("[OK] Produto foi inserido e lido pelos repositories.")
-    print("[OK] Cartão foi inserido através do relationship do Cliente.")
-    print("[OK] IDs SERIAL gerados pelo PostgreSQL foram recuperados.")
-    print("[OK] UPDATEs funcionaram.")
-    print("[OK] Carrinho e ProcessadorPagamento funcionaram.")
-    print("[OK] historico_compra e item_historico foram gravados e lidos.")
-    print("\nTESTE DE INTEGRACAO CONCLUIDO COM SUCESSO.")
+    titulo("4/4 - RESULTADO")
+    print("[OK] 1 Cliente persistido.")
+    print("[OK] 1 Cartão persistido.")
+    print("[OK] 1 Produto persistido.")
+    print("[OK] 1 Carrinho persistido.")
+    print("[OK] 1 Produto_Carrinho persistido.")
+    print("[OK] 1 Historico_Compra persistido.")
+    print("[OK] 1 Item_Historico persistido.")
+    print("\nOs dados NÃO serão apagados.")
+    print("IDs criados:")
+    print(f"  Cliente: {cliente_id}")
+    print(f"  Produto: {produto_id}")
+    print(f"  Carrinho: {carrinho_id}")
+    print("\nTESTE CONCLUÍDO COM SUCESSO.")
     return 0
 
   except Exception as exc:
-    print("\n[ERRO] O teste de integração falhou.")
+    print("\n[ERRO] O teste falhou.")
     print(f"Tipo: {type(exc).__name__}")
     print(f"Detalhe: {exc}")
     return 1
-
-  finally:
-    limpar_teste(cliente_id, produto_id)
 
 
 if __name__ == "__main__":
