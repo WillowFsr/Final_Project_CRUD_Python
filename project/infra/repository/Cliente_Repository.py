@@ -11,23 +11,41 @@ class Cliente_Repository:
 
   @staticmethod
   def to_tuple(cliente_domain: Cliente_Domain) -> tuple[str, int, str, str, Optional[int]]:
-    return (cliente_domain.nome, cliente_domain.idade, cliente_domain.endereco, cliente_domain.nacionalidade, cliente_domain.id_cli)
+    return (
+      cliente_domain.nome,
+      cliente_domain.idade,
+      cliente_domain.endereco,
+      cliente_domain.nacionalidade,
+      cliente_domain.id_cli
+    )
 
   @staticmethod
   def from_db(cliente_entity: Cliente_Entity) -> Cliente_Domain | None:
     if not isinstance(cliente_entity, Cliente_Entity):
       return None
 
-    cliente = Cliente_Domain(nome=cliente_entity.nome, idade=cliente_entity.idade, endereco=cliente_entity.endereco, nacionalidade=cliente_entity.nacionalidade, id_cli=cliente_entity.id_cli)
+    cliente = Cliente_Domain(
+      nome=cliente_entity.nome,
+      idade=cliente_entity.idade,
+      endereco=cliente_entity.endereco,
+      nacionalidade=cliente_entity.nacionalidade,
+      id_cli=cliente_entity.id_cli
+    )
 
     from project.infra.repository.Cartao_Repository import Cartao_Repository
+    from project.infra.repository.Carrinho_Repository import Carrinho_Repository
 
-    if hasattr(cliente_entity, "cartoes"):
-      for cartao_entity in cliente_entity.cartoes:
-        cartao_domain = Cartao_Repository.from_db(cartao_entity)
+    for cartao_entity in cliente_entity.cartoes:
+      cartao_domain = Cartao_Repository.from_db(cartao_entity)
 
-        if cartao_domain:
-          cliente.inserir_cartao(cartao_domain)
+      if cartao_domain:
+        cliente.inserir_cartao(cartao_domain)
+
+    if cliente_entity.carrinho:
+      carrinho_domain = Carrinho_Repository.from_db(cliente_entity.carrinho)
+
+      if carrinho_domain:
+        cliente.carrinho = carrinho_domain
 
     return cliente
 
@@ -36,14 +54,14 @@ class Cliente_Repository:
       return False
 
     with DBConnectionHandler() as db:
-      cliente_entity = Cliente_Entity(nome=cliente_domain.nome, idade=cliente_domain.idade, endereco=cliente_domain.endereco, nacionalidade=cliente_domain.nacionalidade)
+      cliente_entity = Cliente_Entity(nome=cliente_domain.nome,idade=cliente_domain.idade,endereco=cliente_domain.endereco,nacionalidade=cliente_domain.nacionalidade)
 
       from project.infra.entities.cartao import Cartao as Cartao_Entity
 
       cartoes_relacionados = []
 
       for cliente_cartao in cliente_domain.cartoes:
-        cartao_entity = Cartao_Entity(numero=cliente_cartao.numero, validade=cliente_cartao.validade, cvv=cliente_cartao.cvv, bandeira=cliente_cartao.bandeira, saldo=cliente_cartao.saldo)
+        cartao_entity = Cartao_Entity(numero=cliente_cartao.numero,validade=cliente_cartao.validade,cvv=cliente_cartao.cvv,bandeira=cliente_cartao.bandeira,saldo=cliente_cartao.saldo)
 
         cliente_entity.cartoes.append(cartao_entity)
         cartoes_relacionados.append((cliente_cartao, cartao_entity))

@@ -5,10 +5,12 @@ from decimal import Decimal
 #domain importations
 from project.domain.Cliente import Cliente as Cliente_Domain
 from project.domain.Produto import Produto as Produto_Domain
+from project.domain.Carrinho import Carrinho as Carrinho_Domain
 
 #repository importations
 from project.infra.repository.Cliente_Repository import Cliente_Repository as Cliente_Repo
 from project.infra.repository.Produto_Repository import Produto_Repository as Produto_Repo
+from project.infra.repository.Carrinho_Repository import Carrinho_Repository as Carrinho_Repo
 
 
 class RealizarCompra:
