@@ -15,3 +15,4 @@ class Produto(Base):
   estoque:Mapped[int] = mapped_column(SmallInteger, nullable=False, default=0)
 
   item_historico:Mapped[list["Item_Historico_Compra"]] = relationship("Item_Historico_Compra", back_populates="produto")  
+  produto_carrinho: Mapped[list["Produto_Carrinho"]] = relationship("Produto_Carrinho", back_populates="produto")

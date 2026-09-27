@@ -14,3 +14,4 @@ class Cliente(Base):
 
   cartoes:Mapped[list["Cartao"]] = relationship("Cartao",back_populates="cliente")
   historico_compras:Mapped[list["Historico_Compra"]] = relationship("Historico_Compra", back_populates="cliente" , cascade='all, delete-orphan')
+  carrinho: Mapped[Optional["Carrinho"]] = relationship("Carrinho", back_populates="cliente", uselist=False, cascade="all, delete-orphan")

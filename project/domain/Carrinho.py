@@ -5,7 +5,8 @@ from project.domain.ProdutoCarrinho import ProdutoCarrinho
 from decimal import Decimal
 
 class Carrinho:
-  def __init__(self):
+  def __init__(self, id_carrinho:Optional[int]):
+    self.id_carrinho = id_carrinho
     self._produto_carrinho:list[ProdutoCarrinho] = []
   
   def to_dict(self) -> dict[str, Any]:
