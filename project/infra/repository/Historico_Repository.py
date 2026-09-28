@@ -7,7 +7,6 @@ from project.domain.ProdutoCarrinho import ProdutoCarrinho
 from project.infra.configs.connection import DBConnectionHandler
 from project.infra.entities.historico_compra import Historico_Compra as Historico_Entity
 from project.infra.entities.item_historico_compra import Item_Historico_Compra as Item_Entity
-from project.infra import entities as _entities
 
 
 class Historico_Compra_Repository:
