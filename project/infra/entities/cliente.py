@@ -13,6 +13,6 @@ class Cliente(Base):
   endereco:Mapped[str] = mapped_column(String, nullable=False)
   nacionalidade:Mapped[str] = mapped_column(String, nullable=False)
 
-  cartoes:Mapped[list["Cartao"]] = relationship("Cartao",back_populates="cliente")
+  cartoes:Mapped[list["Cartao"]] = relationship("Cartao",back_populates="cliente",cascade="all, delete-orphan")
   historico_compras:Mapped[list["Historico_Compra"]] = relationship("Historico_Compra", back_populates="cliente" , cascade='all, delete-orphan')
   carrinho: Mapped[Optional["Carrinho"]] = relationship("Carrinho",back_populates="cliente",uselist=False,cascade="all, delete-orphan")
