@@ -83,3 +83,8 @@ class Produto_Repository:
       produto_update.estoque = produto.estoque
 
     return True
+
+  def list_all(self):
+    with DBConnectionHandler() as db:
+        produtos = db.session.query(Produto_Entity).all()
+        return produtos

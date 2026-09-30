@@ -76,3 +76,8 @@ def remover_estoque(estoque:EstoqueRequest,id_prod:int = Path(ge=1)) -> ProdutoR
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nao foi possivel remover o estoque")
   
   return Produto_Repository().search(id_prod)
+
+
+@produto_router.get("", response_model=list[ProdutoResponse])
+def listar_produtos():
+    return Produto_Repository().list_all()
