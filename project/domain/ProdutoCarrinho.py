@@ -8,7 +8,6 @@ class ProdutoCarrinho:
   def __init__(self, produto: Produto, quantidade: int, id_produto_carrinho: Optional[int] = None, id_carrinho: Optional[int] = None):
     if (not isinstance(produto, Produto)):
       raise TypeError("A entrada não é um produto valido")
-
     self.id_produto_carrinho = id_produto_carrinho
     self.id_carrinho = id_carrinho
     self.produto = produto
@@ -18,7 +17,7 @@ class ProdutoCarrinho:
     return {
       "id_produto_carrinho": self.id_produto_carrinho,
       "id_carrinho": self.id_carrinho,
-      "id_produto": self.produto.id_prod,
+      "id_prod": self.produto.id_prod,
       "produto": self.produto.to_dict(),
       "quantidade": self.quantidade,
       "subtotal": self.subtotal_produtos()
@@ -34,8 +33,7 @@ class ProdutoCarrinho:
   @id_produto_carrinho.setter
   def id_produto_carrinho(self, id_produto_carrinho: Optional[int]) -> None:
     if (id_produto_carrinho is not None and not isinstance(id_produto_carrinho, int)):
-      raise TypeError("A entrada deve ser um numero inteiro")
-
+''      raise TypeError("A entrada deve ser um numero inteiro")
     self._id_produto_carrinho = id_produto_carrinho
 
   @property
@@ -46,7 +44,6 @@ class ProdutoCarrinho:
   def id_carrinho(self, id_carrinho: Optional[int]) -> None:
     if (id_carrinho is not None and not isinstance(id_carrinho, int)):
       raise TypeError("A entrada deve ser um numero inteiro")
-
     self._id_carrinho = id_carrinho
 
   @property
@@ -57,11 +54,10 @@ class ProdutoCarrinho:
   def produto(self, produto: Produto) -> None:
     if (not isinstance(produto, Produto)):
       raise TypeError("A entrada não é um produto valido")
-
     self._produto = produto
 
   @property
-  def id_produto(self) -> int:
+  def id_prod(self) -> int:
     return self.produto.id_prod
 
   @property
@@ -72,11 +68,8 @@ class ProdutoCarrinho:
   def quantidade(self, quantidade: int) -> None:
     if (not isinstance(quantidade, int)):
       raise TypeError("A quantidade deve ser um numero inteiro")
-
     if (quantidade <= 0):
       raise ValueError("A quantidade de compra nao pode ser inferior ou igual a 0")
-
     if (quantidade > self.produto.estoque):
       raise ValueError("A quantidade de compra e superior ao estoque")
-
     self._quantidade = quantidade

@@ -3,7 +3,7 @@ from pydantic import ConfigDict, Field
 
 # ProdutoCarrinho classes, needed on Carrinho class
 class ProdutoCarrinhoBase(Base):
-  id_produto:int = Field(ge=1)
+  id_prod:int = Field(ge=1)
   quantidade:int = Field(ge=1)
   
 

@@ -49,9 +49,7 @@ class Carrinho_Repository:
       produtos_entity = []
 
       for item in carrinho_domain.produto_no_carrinho():
-        produto_entity = db.session.query(Produto_Entity).filter_by(
-          id_prod=item.produto.id_prod
-        ).first()
+        produto_entity = db.session.query(Produto_Entity).filter_by(id_prod=item.produto.id_prod).first()
 
         if (not produto_entity):
           return False
@@ -68,11 +66,7 @@ class Carrinho_Repository:
       itens_entity = []
 
       for item, produto_entity in produtos_entity:
-        produto_carrinho_entity = Produto_Carrinho_Entity(
-          carrinho=carrinho_entity,
-          produto=produto_entity,
-          quantidade=item.quantidade
-        )
+        produto_carrinho_entity = Produto_Carrinho_Entity(carrinho=carrinho_entity,produto=produto_entity,quantidade=item.quantidade)
 
         db.session.add(produto_carrinho_entity)
         itens_entity.append((item, produto_carrinho_entity))
@@ -93,9 +87,7 @@ class Carrinho_Repository:
       return None
 
     with DBConnectionHandler() as db:
-      carrinho_entity = db.session.query(Carrinho_Entity).filter_by(
-        id_carrinho=id_carrinho
-      ).first()
+      carrinho_entity = db.session.query(Carrinho_Entity).filter_by(id_carrinho=id_carrinho).first()
 
       if (not carrinho_entity):
         return None
@@ -179,3 +171,17 @@ class Carrinho_Repository:
         item.id_carrinho = item_entity.id_carrinho
 
       return True
+    
+  def search_by_cli(self,id_cli:int) -> Carrinho_Domain / None:
+    if (not isinstance(id_cli,int)):
+      return None
+    if (id_cli<1  ):
+      return None
+    
+    with DBConnectionHandler() as db:
+      carrinho_entity = db.session.query(Carrinho_Entity).filter_by(id_cli=id_cli).first()
+      
+      if (not carrinho_entity):
+        return None
+      
+      return self.from_db(carrinho_entity=carrinho_entity)
