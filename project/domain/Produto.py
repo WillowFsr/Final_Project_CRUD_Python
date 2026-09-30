@@ -39,7 +39,23 @@ class Produto:
     
     fator_aumento = 1 + (porcentagem_aumento/100)
     self.preco = self.preco * fator_aumento
- 
+    
+  def adicionar_estoque(self, quantidade: int) -> None:
+    if (not isinstance(quantidade, int)):
+      raise TypeError("A quantidade deve ser um numero inteiro")
+    if (quantidade <= 0):
+      raise ValueError("A quantidade adicionada deve ser maior que zero")
+    self.estoque += quantidade
+
+  def remover_estoque(self, quantidade: int) -> None:
+    if (not isinstance(quantidade, int)):
+      raise TypeError("A quantidade deve ser um numero inteiro")
+    if (quantidade <= 0):
+      raise ValueError("A quantidade removida deve ser maior que zero")
+    if (quantidade > self.estoque):
+      raise ValueError("A quantidade removida e superior ao estoque")
+    self.estoque -= quantidade
+  
 
   #Getters
   @property
@@ -94,9 +110,9 @@ class Produto:
     self._id_prod = id_prod
   
   @estoque.setter
-  def estoque(self, estoque:int|float) -> None:
-    if( not isinstance(estoque, (float,int))):
+  def estoque(self, estoque:int) -> None:
+    if( not isinstance(estoque,int)):
       raise TypeError(f"O estoque de um produto tem que ser um numero")
     if (estoque <0):
       raise ValueError(f"O estoque tem que ser maior ou igual a zero")
-    self._estoque = int(estoque)
+    self._estoque = estoque
