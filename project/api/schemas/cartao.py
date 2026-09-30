@@ -23,3 +23,7 @@ class CartaoResponse(CartaoBase):
   id_cartao:int = Field(ge=1)
   id_cli:int = Field(ge=1)
   saldo:Decimal = Field(ge=Decimal("0.00"))
+  
+  
+class SaldoRequest(Base):
+  valor: Decimal = Field(gt=0)
