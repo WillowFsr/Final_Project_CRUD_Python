@@ -9,7 +9,11 @@ from project.api.schemas.cliente_schema import ClienteRequest, ClienteResponse
 #Cartao stuff
 from project.domain.Cartao import Cartao as Cartao_Domain
 from project.infra.repository.Cartao_Repository import Cartao_Repository
-from project.api.schemas.cartao import CartaoRequest,CartaoResponse
+from project.api.schemas.cartao_schema import CartaoRequest,CartaoResponse, SaldoRequest
+
+#Use cases
+from project.application.use_cases.AdicionarSaldo import AdicionarSaldo
+from project.application.use_cases.RemoverSaldo import RemoverSaldo
 
 cliente_router = APIRouter(prefix="/clientes", tags=["Clientes"])
 
@@ -68,6 +72,7 @@ def criar_cartao(cartao:CartaoRequest, id_cli:int =Path(ge=1)) -> CartaoResponse
   
   return novo_cartao
 
+
 @cliente_router.get("/{id_cli}/cartoes/{id_cartao}", response_model=CartaoResponse, status_code=status.HTTP_200_OK)
 def buscar_cartao_cliente(id_cli:int = Path(ge=1), id_cartao:int = Path(ge=1))-> CartaoResponse:
   cliente = Cliente_Repository().search(id_cli)
@@ -84,6 +89,7 @@ def buscar_cartao_cliente(id_cli:int = Path(ge=1), id_cartao:int = Path(ge=1))->
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Cartao nao pertence ao cliente informado")
   
   return cartao_busca
+ 
  
 @cliente_router.put("/{id_cli}/cartoes/{id_cartao}", response_model= CartaoResponse, status_code=status.HTTP_200_OK)
 def atualizar_cartao_cliente(cartao:CartaoRequest,id_cli:int = Path(ge=1), id_cartao:int = Path(ge=1))-> CartaoResponse:
@@ -106,7 +112,8 @@ def atualizar_cartao_cliente(cartao:CartaoRequest,id_cli:int = Path(ge=1), id_ca
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Informacoes incorretas")
   
   return cartao_atualizar
-  
+
+
 @cliente_router.delete("/{id_cli}/cartoes/{id_cartao}",status_code=status.HTTP_204_NO_CONTENT)
 def excluir_cartao_cliente(id_cli:int =Path(ge=1), id_cartao:int = Path(ge=1))-> None:
   cliente = Cliente_Repository().search(id_cli)
@@ -126,3 +133,48 @@ def excluir_cartao_cliente(id_cli:int =Path(ge=1), id_cartao:int = Path(ge=1))->
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Nao foi possivel excluir o cartao")
   
   return None
+
+
+@cliente_router.post("/{id_cli}/cartoes/{id_cartao}/saldo", response_model=CartaoResponse, status_code=status.HTTP_200_OK)
+def adicionar_saldo_cartao(saldo:SaldoRequest,id_cli:int = Path(ge=1), id_cartao:int =Path(ge=1)) -> CartaoResponse:
+  cliente = Cliente_Repository().search(id_cli= id_cli)
+  
+  if (not cliente):
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente nao encontrado")
+  
+  cartao = Cartao_Repository().search(id_cartao=id_cartao)
+  
+  if (not cartao):
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cartao nao encontrado")
+  
+  if (cartao.id_cli != id_cli):
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cliente nao possui esse cartao")
+  
+  if (not AdicionarSaldo().adicionar_saldo(id_cartao=id_cartao,valor= saldo.valor)):
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nao foi possivel adicionar saldo")
+  
+  return Cartao_Repository().search(id_cartao=id_cartao)
+
+
+@cliente_router.post("/{id_cli}/cartoes/{id_cartao}/saldo/remover",response_model=CartaoResponse,status_code=status.HTTP_200_OK)
+def remover_saldo(saldo:SaldoRequest,id_cli:int=Path(ge=1), id_cartao:int = Path(ge=1)) -> CartaoResponse:
+  cliente = Cliente_Repository().search(id_cli= id_cli)
+  
+  if (not cliente):
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente nao encontrado")
+  
+  cartao = Cartao_Repository().search(id_cartao=id_cartao)
+  
+  if (not cartao):
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cartao nao encontrado")
+  
+  if (cartao.id_cli != id_cli):
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cliente nao possui esse cartao")
+  
+  if (cartao.saldo < saldo.valor):
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Saldo insuficiente")
+  
+  if (not RemoverSaldo().remover_saldo(id_cartao=id_cartao,valor=saldo.valor)):
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nao foi possivel remover saldo")
+  
+  return Cartao_Repository().search(id_cartao=id_cartao)
