@@ -16,3 +16,8 @@ class ProdutoResponse(ProdutoBase):
   model_config = ConfigDict(from_attributes=True)
   
   id_prod:int = Field(ge=1)
+  
+
+class EstoqueRequest(Base):
+  estoque:int = Path(ge=0)
+  
