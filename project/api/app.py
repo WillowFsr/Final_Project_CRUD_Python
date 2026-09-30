@@ -9,6 +9,7 @@ app = FastAPI(title="PROJECT CPDI",)
 app.include_router(cliente_router)
 app.include_router(produto_router)
 app.include_router(carrinho_router)
+app.include_router(compra_router)
 app.include_router(historico_router)
 
 @app.get("/")
