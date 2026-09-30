@@ -33,7 +33,7 @@ class ProdutoCarrinho:
   @id_produto_carrinho.setter
   def id_produto_carrinho(self, id_produto_carrinho: Optional[int]) -> None:
     if (id_produto_carrinho is not None and not isinstance(id_produto_carrinho, int)):
-''      raise TypeError("A entrada deve ser um numero inteiro")
+      raise TypeError("A entrada deve ser um numero inteiro")
     self._id_produto_carrinho = id_produto_carrinho
 
   @property

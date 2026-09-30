@@ -19,5 +19,5 @@ class ProdutoResponse(ProdutoBase):
   
 
 class EstoqueRequest(Base):
-  estoque:int = Path(ge=0)
+  estoque:int = Field(ge=0)
   
