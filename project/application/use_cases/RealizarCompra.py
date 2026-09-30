@@ -74,7 +74,7 @@ class RealizarCompra:
       if ( not produto_repo.update(item.produto.id_prod,item.produto)):
         return False
       
-    cartao.saldo -= valor_total
+    cartao.remover_saldo(valor_total)
     if (not cartao_repo.update(id_cartao,cartao)):
       return False
     

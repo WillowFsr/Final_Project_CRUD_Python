@@ -4,14 +4,14 @@ from decimal import Decimal
 from datetime import date
 
 class Cartao:
-  def __init__(self, numero: str, validade: date, cvv: str, bandeira: str, saldo: Decimal, id_cli: Optional[int] = None, id_cartao: Optional[int] = None ):
+  def __init__(self, numero: str, validade: date, cvv: str, bandeira: str, saldo: Decimal = Decimal("0.00"), id_cli: Optional[int] = None, id_cartao: Optional[int] = None ):
     self.id_cartao = id_cartao  
     self.id_cli = id_cli
     self.numero = numero
     self.validade = validade
     self.cvv = cvv
     self.bandeira = bandeira
-    self.saldo = saldo
+    self.saldo = saldo 
 
   # - > Methods
   def to_dict(self) -> dict[str, Any]:
@@ -25,6 +25,28 @@ class Cartao:
       "saldo": self.saldo
     }
   
+  def adicionar_saldo(self, valor: Decimal) -> None:
+    if not isinstance(valor, Decimal):
+        raise TypeError("O valor deve ser Decimal")
+
+    if valor <= 0:
+        raise ValueError("O valor deve ser maior que zero")
+
+    self._saldo += valor
+    
+  def remover_saldo(self, valor: Decimal) -> None:
+    if not isinstance(valor, Decimal):
+        raise TypeError("O valor deve ser Decimal")
+
+    if valor <= 0:
+        raise ValueError("O valor deve ser maior que zero")
+
+    if valor > self._saldo:
+        raise ValueError("Saldo insuficiente")
+
+    self._saldo -= valor
+    
+    
   #Getters
   @property
   def id_cartao(self) -> Optional[int]:

@@ -1,13 +1,13 @@
-from typing import Annotated
+from __future__ import annotations
 
 from project.api.schemas.produto_schema import ProdutoRequest,ProdutoResponse
-from fastapi import APIRouter, Depends, HTTPException, status, Path
+from fastapi import APIRouter, HTTPException, status, Path
 from project.infra.repository.Produto_Repository import Produto_Repository
 from project.domain.Produto import Produto as Produto_Domain
 
 produto_router = APIRouter(prefix="/produtos", tags=["Produtos"])
 
-@produto_router.post("/",response_model=ProdutoResponse,status_code=status.HTTP_201_CREATED)
+@produto_router.post("",response_model=ProdutoResponse,status_code=status.HTTP_201_CREATED)
 def criar_produto(produto:ProdutoRequest) ->ProdutoResponse:
   novo_produto = Produto_Domain(nome=produto.nome,preco=produto.preco,descricao=produto.descricao,estoque=produto.estoque)
   
