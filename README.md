@@ -1,149 +1,317 @@
-# Guia do Projeto e Fundamentos de Persistência
+# AUREA — E-commerce em Python
 
-Documento técnico de referência sobre a estrutura atual do projeto, separação de responsabilidades, persistência com PostgreSQL, domínio, casos de uso e camada de API.
+> Aplicação de e-commerce desenvolvida em Python, com PostgreSQL, SQLAlchemy, FastAPI e uma interface web integrada. O projeto foi construído com foco em separação de responsabilidades, princípios de Clean Architecture e conceitos de Domain-Driven Design (DDD).
 
----
+## Sobre o projeto
 
-## Princípios de Arquitetura
+O AUREA é uma aplicação de loja virtual criada como projeto final de formação em programação Python.
 
-O projeto procura seguir princípios de Clean Architecture e conceitos de DDD de forma pragmática.
+A aplicação reúne uma camada de domínio com regras de negócio, uma camada de aplicação para os casos de uso, infraestrutura para persistência dos dados e uma API HTTP construída com FastAPI. A interface web utiliza Jinja2, HTML, CSS e JavaScript e consome a própria API do sistema.
 
-Algumas regras adotadas:
+O fluxo principal de e-commerce já foi validado com dados persistidos no PostgreSQL, incluindo cadastro de clientes, cartões, produtos, carrinho, checkout e histórico de compras.
 
-- o domínio não deve depender de SQLAlchemy;
-- a API não deve conter regras de negócio da compra;
-- repositories cuidam da persistência;
-- casos de uso orquestram operações de negócio;
-- entities representam a persistência e o mapeamento relacional;
-- regras específicas do negócio devem permanecer no domínio ou nos casos de uso, conforme sua responsabilidade.
+## Principais funcionalidades
 
-O objetivo é manter o projeto simples o suficiente para evolução gradual, sem acoplar a regra de negócio à infraestrutura.
+- Cadastro, consulta, atualização e exclusão de clientes.
+- Cadastro, consulta, atualização e exclusão de produtos.
+- Controle de estoque e preço dos produtos.
+- Cadastro de cartões vinculados aos clientes.
+- Controle de saldo dos cartões.
+- Carrinho persistido por cliente.
+- Adição de produtos ao carrinho.
+- Acúmulo de quantidade quando o mesmo produto é adicionado novamente.
+- Remoção de produtos do carrinho.
+- Cálculo automático do total da compra.
+- Checkout com validação de saldo e estoque.
+- Atualização do saldo do cartão após a compra.
+- Atualização do estoque após a compra.
+- Limpeza do carrinho após uma compra concluída.
+- Registro do histórico da compra.
+- Registro do preço do produto no momento da compra (`preco_momento`).
+- Interface web para navegação da loja, conta, sacola, checkout e histórico.
+- Área de gestão para cadastro e manutenção de produtos.
+- Documentação interativa da API com Swagger/OpenAPI.
 
+## Tecnologias
 
-## 1. Visão Geral
+| Tecnologia | Uso |
+|---|---|
+| Python | Linguagem principal |
+| FastAPI | API HTTP |
+| Uvicorn | Servidor ASGI |
+| Pydantic | Validação e schemas da API |
+| SQLAlchemy | ORM e mapeamento relacional |
+| Psycopg | Comunicação com PostgreSQL |
+| PostgreSQL | Banco de dados |
+| Jinja2 | Templates HTML |
+| HTML / CSS / JavaScript | Interface web |
+| Clean Architecture | Organização das responsabilidades |
+| DDD | Modelagem e regras do domínio |
 
-O projeto é uma aplicação Python organizada em camadas, com foco em separação de responsabilidades e isolamento da regra de negócio em relação aos detalhes de persistência e à interface HTTP.
+## Arquitetura
 
-Atualmente, o sistema possui:
-
-- PostgreSQL como banco de dados;
-- SQLAlchemy como ORM;
-- Psycopg para comunicação com PostgreSQL;
-- camada de domínio para regras e entidades de negócio;
-- repositories para persistência;
-- casos de uso para orquestração das operações de negócio;
-- início da camada HTTP com FastAPI;
-- Uvicorn para execução da API.
-
-O fluxo principal de compra já foi implementado e validado com persistência real no PostgreSQL.
-
----
-
-## 2. Estrutura e Camadas do Projeto
+A estrutura do projeto busca manter o domínio independente dos detalhes de infraestrutura e da camada HTTP.
 
 ```text
-Final_Project_CRUD_Python/
-├── .env                         # Variáveis de ambiente locais
-├── .env.example                 # Modelo das variáveis de ambiente
-├── requirements.txt             # Dependências do projeto
-└── project/
-    ├── __init__.py
-    ├── main.py                  # Testes e ponto de entrada local
-    │
-    ├── api/                     # Camada HTTP / FastAPI
-    │   ├── __init__.py
-    │   ├── app.py               # Instância principal do FastAPI
-    │   ├── routes/               # Endpoints da aplicação
-    │   │   └── __init__.py
-    │   └── schemas/              # Modelos Pydantic de entrada/saída
-    │       └── __init__.py
-    │
-    ├── application/             # Casos de uso da aplicação
-    │   ├── __init__.py
-    │   └── use_cases/
-    │       ├── __init__.py
-    │       └── RealizarCompra.py
-    │
-    ├── domain/                  # Regras e entidades de negócio
-    │   ├── Cliente.py
-    │   ├── Cartao.py
-    │   ├── Produto.py
-    │   ├── Carrinho.py
-    │   ├── ProdutoCarrinho.py
-    │   └── ...
-    │
-    └── infra/                   # Detalhes de infraestrutura
-        ├── __init__.py
-        ├── configs/
-        │   ├── connection.py   # Conexão e gerenciamento de sessão
-        │   └── ...
-        ├── entities/            # Mapeamento SQLAlchemy das tabelas
-        └── repository/          # Persistência e consultas
+project/
+├── api/
+│   ├── app.py
+│   ├── routes/
+│   ├── schemas/
+│   └── templates/
+│       ├── pages/
+│       └── static/
+│           ├── css/
+│           └── js/
+│
+├── application/
+│   └── use_cases/
+│       └── RealizarCompra.py
+│
+├── domain/
+│   ├── Cliente.py
+│   ├── Cartao.py
+│   ├── Produto.py
+│   ├── Carrinho.py
+│   └── ProdutoCarrinho.py
+│
+└── infra/
+    ├── configs/
+    ├── entities/
+    └── repository/
 ```
 
-### Responsabilidades das camadas
+### Responsabilidade das camadas
 
-**`domain/`**
+**Domain**
 
-Contém os objetos e regras de negócio independentes de banco de dados ou HTTP.
+Concentra entidades e regras de negócio, evitando dependência direta de FastAPI, SQLAlchemy ou PostgreSQL.
 
-**`application/use_cases/`**
+**Application**
 
-Coordena operações de negócio que envolvem várias entidades e repositories. Um exemplo é o `RealizarCompra`.
+Orquestra operações de negócio que envolvem múltiplas entidades e componentes. O principal exemplo é o caso de uso `RealizarCompra`.
 
-**`infra/entities/`**
+**Infra**
 
-Contém os mapeamentos SQLAlchemy que representam as tabelas do PostgreSQL.
+Contém a comunicação com o banco, as entities do SQLAlchemy e os repositories responsáveis pela persistência.
 
-**`infra/repository/`**
+**API**
 
-Responsável por persistir, consultar, atualizar e remover dados do banco.
+Responsável pela comunicação HTTP, schemas Pydantic e exposição dos recursos da aplicação.
 
-**`api/`**
+**Templates / Static**
 
-Camada responsável pela comunicação HTTP. As rotas recebem as requisições, validam os dados por meio dos schemas e chamam os casos de uso ou repositories apropriados.
+Contém somente a camada de apresentação: páginas Jinja2, CSS e JavaScript do frontend.
 
----
+## Fluxo da compra
 
-## 3. Modelo de Dados Atual
+O checkout segue, de forma simplificada, o fluxo:
 
-O banco possui atualmente as seguintes tabelas:
+```text
+Cliente + Cartão
+       ↓
+     Carrinho
+       ↓
+  Calcular total
+       ↓
+Validar saldo
+       ↓
+Validar estoque
+       ↓
+Registrar histórico
+       ↓
+Atualizar estoque
+       ↓
+Atualizar saldo
+       ↓
+ Limpar carrinho
+```
+
+O histórico mantém o preço praticado no momento da compra, permitindo preservar a informação mesmo que o preço do produto seja alterado posteriormente.
+
+## Modelo de dados
+
+O PostgreSQL utilizado pelo projeto possui atualmente sete tabelas principais:
 
 ```text
 cliente
 ├── cartao
 ├── carrinho
-│   └── produto_carrinho ─── produto
+│   └── produto_carrinho
 └── historico_compra
-    └── item_historico ───── produto
+    └── item_historico
+
+produto
+├── produto_carrinho
+└── item_historico
 ```
 
 ### Tabelas
 
-- `cliente`: dados dos clientes;
-- `cartao`: cartões vinculados a clientes e seus saldos;
-- `produto`: produtos, preços e estoque;
-- `carrinho`: carrinho persistido de cada cliente;
-- `produto_carrinho`: produtos e quantidades presentes no carrinho;
-- `historico_compra`: registro de cada compra realizada;
-- `item_historico`: itens de cada compra, incluindo o preço praticado no momento da compra.
+- `cliente`: dados cadastrais dos clientes.
+- `cartao`: cartões e saldos associados aos clientes.
+- `produto`: catálogo, preços e estoque.
+- `carrinho`: carrinho persistido do cliente.
+- `produto_carrinho`: associação entre carrinho, produto e quantidade.
+- `historico_compra`: registro de cada compra realizada.
+- `item_historico`: itens comprados e preço praticado no momento da compra.
 
-O banco utiliza chaves estrangeiras e `ON DELETE CASCADE` nos relacionamentos em que o ciclo de vida dos dados depende do registro pai.
+## Interface web
 
----
+A interface utiliza o nome AUREA apenas como identidade visual da loja. Ela é servida pelo próprio FastAPI através de Jinja2.
 
-## 4. Repositories
+A organização atual do frontend é:
 
-Os repositories fazem a ponte entre o domínio e as entities do SQLAlchemy.
+```text
+templates/
+├── pages/
+│   ├── base.html
+│   ├── index.html
+│   ├── loja.html
+│   ├── conta.html
+│   ├── sacola.html
+│   ├── checkout.html
+│   ├── historico.html
+│   └── gestao.html
+│
+└── static/
+    ├── css/
+    │   └── style.css
+    └── js/
+        ├── api.js
+        ├── common.js
+        ├── home.js
+        ├── loja.js
+        ├── conta.js
+        ├── sacola.js
+        ├── checkout.js
+        ├── historico.js
+        └── gestao.js
+```
 
-Atualmente o projeto possui repositories para operações relacionadas a:
+A página de gestão permite administrar produtos pelo frontend, enquanto as demais páginas cuidam da navegação da loja e das etapas da compra.
 
-- `Cliente`;
-- `Cartao`;
-- `Produto`;
-- `Carrinho`;
-- `Historico_Compra`.
+## Requisitos
 
-Um princípio adotado no projeto é que objetos auxiliares de relacionamento, como `ProdutoCarrinho`, não precisam necessariamente de um repository próprio quando sua persistência é responsabilidade do repository do agregado ao qual pertencem.
+- Python 3.12+ recomendado
+- PostgreSQL 18 (ou versão compatível com o projeto)
+- Ambiente virtual Python
 
----
+## Configuração
+
+Crie um ambiente virtual e instale as dependências:
+
+```bash
+python -m venv .venv
+```
+
+No Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+No Linux/macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+Depois:
+
+```bash
+pip install -r requirements.txt
+```
+
+Configure as variáveis de ambiente no `.env`:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=Project_CPDI
+DB_USER=postgres
+DB_PASSWORD=sua_senha
+```
+
+> O arquivo `.env` deve permanecer fora do Git. Utilize o `.env.example` como referência quando disponível.
+
+## Executando
+
+A partir da raiz do projeto:
+
+```bash
+python -m uvicorn project.api.app:app --reload
+```
+
+A aplicação ficará disponível em:
+
+```text
+http://127.0.0.1:8000/
+```
+
+A documentação interativa da API:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Validação do projeto
+
+O backend foi validado com operações reais no PostgreSQL através da API e consultas diretas ao banco.
+
+Entre os fluxos já verificados estão:
+
+- criação de cliente com carrinho persistido;
+- cadastro e consulta de produtos;
+- associação de cartão ao cliente;
+- adição de produtos ao carrinho;
+- adição repetida do mesmo produto com acumulação da quantidade;
+- remoção de produto do carrinho;
+- realização da compra;
+- redução do saldo do cartão;
+- redução do estoque;
+- limpeza do carrinho;
+- criação do histórico da compra;
+- consulta do histórico através da API.
+
+A documentação Swagger também foi utilizada para testar diretamente os endpoints REST.
+
+## API
+
+A API é organizada em rotas por recurso, incluindo operações para:
+
+```text
+clientes
+produtos
+cartões
+carrinho
+compras
+histórico
+```
+
+Cada recurso possui seus schemas Pydantic e os repositories correspondentes na infraestrutura.
+
+## Princípios adotados
+
+O projeto procura aplicar Clean Architecture e DDD de maneira pragmática, sem transformar a aplicação em uma estrutura excessivamente complexa.
+
+Entre os princípios utilizados:
+
+- regras de negócio concentradas no domínio e nos casos de uso;
+- domínio desacoplado de SQLAlchemy;
+- persistência isolada em repositories;
+- SQLAlchemy utilizado na camada de infraestrutura;
+- FastAPI restrito à camada HTTP;
+- schemas Pydantic utilizados para contratos de entrada e saída;
+- frontend tratado como camada de apresentação;
+- objetos de relacionamento, como `ProdutoCarrinho`, persistidos como parte do agregado de carrinho quando apropriado.
+
+## Status
+
+**Projeto funcional em desenvolvimento.**
+
+A API e o fluxo principal de compra já estão funcionando e foram validados com persistência real. A interface web está integrada à API e continua sendo refinada como camada de apresentação.
+
+## Autor
+
+Projeto desenvolvido como trabalho final de formação em programação Python.
