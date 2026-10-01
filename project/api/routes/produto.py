@@ -49,6 +49,7 @@ def excluir_produto(id_prod:int = Path(ge=1))-> None:
   
   return None
 
+
 @produto_router.post("/{id_prod}/estoque", status_code=status.HTTP_200_OK, response_model=ProdutoResponse)
 def adicionar_estoque(estoque:EstoqueRequest,id_prod:int = Path(ge=1)) -> ProdutoResponse:
   produto = Produto_Repository().search(id_prod)
@@ -56,7 +57,7 @@ def adicionar_estoque(estoque:EstoqueRequest,id_prod:int = Path(ge=1)) -> Produt
   if (not produto):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Produto nao encontrado")
   
-  if (not AdicionarEstoque().adicionar_estoque(id_prod=id_prod,quantidade=estoque.quantidade)):
+  if (not AdicionarEstoque().adicionar_estoque(id_prod,estoque.quantidade)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nao foi possivel aumentar o estoque")
   
   return Produto_Repository().search(id_prod)
@@ -72,7 +73,7 @@ def remover_estoque(estoque:EstoqueRequest,id_prod:int = Path(ge=1)) -> ProdutoR
   if (produto.estoque < estoque.quantidade):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Estoque insuficiente")
   
-  if (not RemoverEstoque().remover_estoque(id_prod=id_prod,quantidade=estoque.quantidade)):
+  if (not RemoverEstoque().remover_estoque(id_prod,estoque.quantidade)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nao foi possivel remover o estoque")
   
   return Produto_Repository().search(id_prod)

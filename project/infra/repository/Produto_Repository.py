@@ -84,7 +84,7 @@ class Produto_Repository:
 
     return True
 
-  def list_all(self):
+  def list_all(self) -> list[Produto_Domain]:
     with DBConnectionHandler() as db:
-        produtos = db.session.query(Produto_Entity).all()
-        return produtos
+      produtos = db.session.query(Produto_Entity).all()
+      return [self.from_db(produto)for produto in produtos]

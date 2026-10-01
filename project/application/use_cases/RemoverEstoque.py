@@ -26,4 +26,4 @@ class RemoverEstoque:
     except (TypeError, ValueError):
       return False
 
-    return Produto_Repository().update(produto)
+    return Produto_Repository().update(id_prod,produto)

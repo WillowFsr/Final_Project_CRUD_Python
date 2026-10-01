@@ -13,4 +13,4 @@ class Carrinho(Base):
 
   cliente: Mapped["Cliente"] = relationship("Cliente",back_populates="carrinho")
 
-  produto_carrinho: Mapped[list["Produto_Carrinho"]] = relationship("Produto_Carrinho",back_populates="carrinho",cascade="all, delete-orphan")
+  produtos_carrinho: Mapped[list["Produto_Carrinho"]] = relationship("Produto_Carrinho",back_populates="carrinho",cascade="all, delete-orphan")

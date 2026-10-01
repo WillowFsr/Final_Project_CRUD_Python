@@ -16,4 +16,4 @@ class AdicionarSaldo:
     except (TypeError, ValueError):
       return False
   
-    return Cartao_Repository().update(cartao)
+    return Cartao_Repository().update(id_cartao,cartao)

@@ -33,7 +33,7 @@ class Carrinho:
     novo_produto = ProdutoCarrinho(produto, quantidade)
 
     for produto_carrinho in self._produto_carrinho:
-      if (novo_produto.produto == produto_carrinho.produto):
+      if (novo_produto.produto.id_prod == produto_carrinho.produto.id_prod):
         produto_carrinho.quantidade += novo_produto.quantidade
         return True
 
@@ -45,7 +45,7 @@ class Carrinho:
       raise TypeError("Informe um produto corretamente")
 
     for produto_carrinho in self._produto_carrinho:
-      if (produto == produto_carrinho.produto):
+      if (produto.id_prod == produto_carrinho.produto.id_prod):
         self._produto_carrinho.remove(produto_carrinho)
         return True
 

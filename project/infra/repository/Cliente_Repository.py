@@ -42,14 +42,29 @@ class Cliente_Repository:
       return False
 
     with DBConnectionHandler() as db:
-      cliente_entity = Cliente_Entity(nome=cliente_domain.nome,idade=cliente_domain.idade,endereco=cliente_domain.endereco,nacionalidade=cliente_domain.nacionalidade)
-
       from project.infra.entities.cartao import Cartao as Cartao_Entity
+      from project.infra.entities.carrinho import Carrinho as Carrinho_Entity
+
+      cliente_entity = Cliente_Entity(
+        nome=cliente_domain.nome,
+        idade=cliente_domain.idade,
+        endereco=cliente_domain.endereco,
+        nacionalidade=cliente_domain.nacionalidade
+      )
+
+      # Cria automaticamente o carrinho do cliente
+      cliente_entity.carrinho = Carrinho_Entity()
 
       cartoes_relacionados = []
 
       for cliente_cartao in cliente_domain.cartoes:
-        cartao_entity = Cartao_Entity(numero=cliente_cartao.numero,validade=cliente_cartao.validade,cvv=cliente_cartao.cvv,bandeira=cliente_cartao.bandeira,saldo=cliente_cartao.saldo)
+        cartao_entity = Cartao_Entity(
+          numero=cliente_cartao.numero,
+          validade=cliente_cartao.validade,
+          cvv=cliente_cartao.cvv,
+          bandeira=cliente_cartao.bandeira,
+          saldo=cliente_cartao.saldo
+        )
 
         cliente_entity.cartoes.append(cartao_entity)
         cartoes_relacionados.append((cliente_cartao, cartao_entity))
@@ -73,7 +88,10 @@ class Cliente_Repository:
       return None
 
     with DBConnectionHandler() as db:
-      cliente_busca = db.session.query(Cliente_Entity).filter_by(id_cli=cli_id).first()
+      cliente_busca = db.session.query(Cliente_Entity).filter_by(
+        id_cli=cli_id
+      ).first()
+
       return self.from_db(cliente_busca)
 
   def delete(self, cli_id: int) -> bool:
@@ -84,7 +102,9 @@ class Cliente_Repository:
       return False
 
     with DBConnectionHandler() as db:
-      cliente_entity = db.session.query(Cliente_Entity).filter_by(id_cli=cli_id).first()
+      cliente_entity = db.session.query(Cliente_Entity).filter_by(
+        id_cli=cli_id
+      ).first()
 
       if not cliente_entity:
         return False
@@ -104,7 +124,9 @@ class Cliente_Repository:
       return False
 
     with DBConnectionHandler() as db:
-      cliente_entity = db.session.query(Cliente_Entity).filter_by(id_cli=cli_id).first()
+      cliente_entity = db.session.query(Cliente_Entity).filter_by(
+        id_cli=cli_id
+      ).first()
 
       if not cliente_entity:
         return False

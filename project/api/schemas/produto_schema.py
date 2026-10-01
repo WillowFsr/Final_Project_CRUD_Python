@@ -19,5 +19,5 @@ class ProdutoResponse(ProdutoBase):
   
 
 class EstoqueRequest(Base):
-  estoque:int = Field(ge=0)
+  quantidade:int = Field(ge=0)
   

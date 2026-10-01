@@ -137,12 +137,12 @@ def excluir_cartao_cliente(id_cli:int =Path(ge=1), id_cartao:int = Path(ge=1))->
 
 @cliente_router.post("/{id_cli}/cartoes/{id_cartao}/saldo", response_model=CartaoResponse, status_code=status.HTTP_200_OK)
 def adicionar_saldo_cartao(saldo:SaldoRequest,id_cli:int = Path(ge=1), id_cartao:int =Path(ge=1)) -> CartaoResponse:
-  cliente = Cliente_Repository().search(id_cli= id_cli)
+  cliente = Cliente_Repository().search(id_cli)
   
   if (not cliente):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente nao encontrado")
   
-  cartao = Cartao_Repository().search(id_cartao=id_cartao)
+  cartao = Cartao_Repository().search(id_cartao)
   
   if (not cartao):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cartao nao encontrado")
@@ -153,17 +153,17 @@ def adicionar_saldo_cartao(saldo:SaldoRequest,id_cli:int = Path(ge=1), id_cartao
   if (not AdicionarSaldo().adicionar_saldo(id_cartao=id_cartao,valor= saldo.valor)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nao foi possivel adicionar saldo")
   
-  return Cartao_Repository().search(id_cartao=id_cartao)
+  return Cartao_Repository().search(id_cartao)
 
 
 @cliente_router.post("/{id_cli}/cartoes/{id_cartao}/saldo/remover",response_model=CartaoResponse,status_code=status.HTTP_200_OK)
 def remover_saldo(saldo:SaldoRequest,id_cli:int=Path(ge=1), id_cartao:int = Path(ge=1)) -> CartaoResponse:
-  cliente = Cliente_Repository().search(id_cli= id_cli)
+  cliente = Cliente_Repository().search(id_cli)
   
   if (not cliente):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente nao encontrado")
   
-  cartao = Cartao_Repository().search(id_cartao=id_cartao)
+  cartao = Cartao_Repository().search(id_cartao)
   
   if (not cartao):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cartao nao encontrado")
@@ -177,4 +177,4 @@ def remover_saldo(saldo:SaldoRequest,id_cli:int=Path(ge=1), id_cartao:int = Path
   if (not RemoverSaldo().remover_saldo(id_cartao=id_cartao,valor=saldo.valor)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nao foi possivel remover saldo")
   
-  return Cartao_Repository().search(id_cartao=id_cartao)
+  return Cartao_Repository().search(id_cartao)
