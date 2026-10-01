@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-intro">
+  <div class="container page-intro-inner">
+    <div>
+      <span class="eyebrow">Última etapa</span>
+      <h1>Finalize com tranquilidade.</h1>
+      <p>Confira o pedido, informe o cartão e confirme a compra.</p>
+    </div>
+    <div class="page-intro-mark">A / 05</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container checkout-layout">
+    <article class="surface-card checkout-order-card">
+      <div class="section-mini-head">
+        <div>
+          <span class="card-eyebrow">PEDIDO</span>
+          <h2>Resumo da compra</h2>
+        </div>
+        <span id="checkout-client-label" class="status-chip">Cliente não definido</span>
+      </div>
+      <div id="checkout-cart" class="checkout-items">
+        <div class="empty-state">Carregando sua sacola...</div>
+      </div>
+      <div class="checkout-total">
+        <span>Total</span>
+        <strong id="checkout-total-price">R$ 0,00</strong>
+      </div>
+    </article>
+
+    <article class="surface-card">
+      <div class="card-eyebrow">PAGAMENTO</div>
+      <h2>Confirmar compra</h2>
+      <p class="card-lead">Informe o ID do cartão com saldo suficiente para o pedido.</p>
+      <form id="checkout-form" class="form-stack">
+        <label class="field"><span>ID do cartão</span><input id="checkout-card-id" type="number" min="1" placeholder="Ex.: 2" required></label>
+        <button class="button button-dark button-full" type="submit">Confirmar compra <span>→</span></button>
+      </form>
+      <div id="checkout-result" class="result-box hidden"></div>
+      <div class="security-note"><span>✓</span><span>O saldo e o estoque são validados pela API antes da confirmação.</span></div>
+    </article>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/checkout.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="home-hero">
+  <div class="container home-hero-grid">
+    <div class="home-hero-copy">
+      <span class="eyebrow">Coleção essencial · 2026</span>
+      <h1>Menos excesso.<br><em>Mais escolha.</em></h1>
+      <p>Descubra produtos pensados para uma rotina mais simples. Navegue pelo catálogo, monte sua sacola e finalize quando estiver pronto.</p>
+      <div class="hero-actions">
+        <a class="button button-dark" href="/loja">Explorar loja <span>→</span></a>
+        <a class="text-button" href="/conta">Criar minha conta</a>
+      </div>
+      <div class="hero-meta">
+        <span><strong>01</strong> catálogo vivo</span>
+        <span><strong>02</strong> compra segura</span>
+        <span><strong>03</strong> histórico completo</span>
+      </div>
+    </div>
+
+    <div class="hero-editorial" aria-hidden="true">
+      <div class="editorial-card editorial-card-main">
+        <span class="editorial-kicker">AUREA SELECT</span>
+        <div class="editorial-product-shape"></div>
+        <div class="editorial-card-footer">
+          <span>Curated for everyday</span>
+          <strong>01 / 03</strong>
+        </div>
+      </div>
+      <div class="editorial-card editorial-card-small">
+        <span>NEW</span>
+        <strong>Descubra</strong>
+        <small>novos favoritos</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-products-home">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Seleção atual</span>
+        <h2>O que está em destaque</h2>
+      </div>
+      <a class="inline-arrow" href="/loja">Ver catálogo completo <span>↗</span></a>
+    </div>
+    <div id="home-products" class="product-grid product-grid-home">
+      <div class="loading-card">Carregando seleção...</div>
+    </div>
+  </div>
+</section>
+
+<section class="editorial-strip">
+  <div class="container editorial-strip-grid">
+    <div>
+      <span class="eyebrow light">Para comprar com calma</span>
+      <h2>Uma loja sem ruído.</h2>
+    </div>
+    <p>Escolha o que precisa, controle sua sacola e acompanhe suas compras depois. Tudo em um só lugar.</p>
+    <a class="button button-light" href="/loja">Começar <span>→</span></a>
+  </div>
+</section>
+
+<section class="section section-values">
+  <div class="container value-grid">
+    <article class="value-card">
+      <span>01</span>
+      <h3>Curadoria simples</h3>
+      <p>Um catálogo limpo para você encontrar produtos sem precisar navegar por uma infinidade de telas.</p>
+    </article>
+    <article class="value-card">
+      <span>02</span>
+      <h3>Compra transparente</h3>
+      <p>Quantidade, total, saldo e estoque ficam visíveis em cada etapa do processo.</p>
+    </article>
+    <article class="value-card">
+      <span>03</span>
+      <h3>Histórico sempre seu</h3>
+      <p>Suas compras ficam registradas com o valor e o preço do produto no momento da compra.</p>
+    </article>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/home.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-intro">
+  <div class="container page-intro-inner">
+    <div>
+      <span class="eyebrow">Área pessoal</span>
+      <h1>Sua conta, do seu jeito.</h1>
+      <p>Cadastre seus dados, configure um cartão e deixe o checkout pronto.</p>
+    </div>
+    <div class="page-intro-mark">A / 03</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container account-layout">
+    <article class="surface-card surface-card-dark account-active-card">
+      <div class="card-topline">
+        <span>CLIENTE ATUAL</span>
+        <span id="account-client-status" class="status-chip status-chip-light">Não selecionado</span>
+      </div>
+      <div id="account-client-panel" class="account-identity empty-account">
+        <strong>Escolha uma conta</strong>
+        <span>Use seu ID abaixo ou crie uma nova conta.</span>
+      </div>
+      <div class="inline-form">
+        <label class="field field-dark"><span>ID do cliente</span><input id="account-client-id" type="number" min="1" placeholder="Ex.: 4"></label>
+        <button id="account-load-client" class="button button-light" type="button">Carregar</button>
+      </div>
+    </article>
+
+    <article class="surface-card">
+      <div class="card-eyebrow">NOVO CADASTRO</div>
+      <h2>Comece por aqui.</h2>
+      <p class="card-lead">Crie uma conta para salvar seus dados e participar das compras.</p>
+      <form id="client-create-form" class="form-grid">
+        <label class="field full"><span>Nome completo</span><input name="nome" maxlength="150" required placeholder="Seu nome"></label>
+        <label class="field"><span>Idade</span><input name="idade" type="number" min="1" required placeholder="25"></label>
+        <label class="field"><span>Nacionalidade</span><input name="nacionalidade" maxlength="25" required value="Brasileira"></label>
+        <label class="field full"><span>Endereço</span><input name="endereco" required placeholder="Rua, número, cidade"></label>
+        <div class="full form-actions"><button class="button button-dark" type="submit">Criar conta <span>→</span></button></div>
+      </form>
+    </article>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container account-layout">
+    <article class="surface-card">
+      <div class="card-eyebrow">PAGAMENTO</div>
+      <h2>Adicionar cartão</h2>
+      <p class="card-lead">Cadastre o cartão que será usado no checkout.</p>
+      <form id="card-create-form" class="form-grid">
+        <label class="field full"><span>Número</span><input name="numero" inputmode="numeric" minlength="16" maxlength="16" required placeholder="16 dígitos"></label>
+        <label class="field"><span>Validade</span><input name="validade" type="date" required></label>
+        <label class="field"><span>CVV</span><input name="cvv" inputmode="numeric" minlength="3" maxlength="3" required placeholder="123"></label>
+        <label class="field full"><span>Bandeira</span><input name="bandeira" maxlength="20" required placeholder="Visa, Mastercard..."></label>
+        <div class="full form-actions"><button class="button button-dark" type="submit">Salvar cartão</button></div>
+      </form>
+      <div id="card-result" class="result-box hidden"></div>
+    </article>
+
+    <article class="surface-card">
+      <div class="card-eyebrow">SALDO</div>
+      <h2>Preparar checkout</h2>
+      <p class="card-lead">Adicione crédito ao cartão escolhido quando quiser.</p>
+      <div class="balance-panel">
+        <div class="balance-current"><span>Cartão salvo</span><strong id="saved-card-label">Nenhum</strong></div>
+        <div class="balance-current"><span>Saldo</span><strong id="saved-card-balance">—</strong></div>
+      </div>
+      <div class="form-grid balance-form">
+        <label class="field"><span>ID do cartão</span><input id="balance-card-id" type="number" min="1" placeholder="ID"></label>
+        <label class="field"><span>Valor</span><input id="balance-value" type="number" min="0.01" step="0.01" placeholder="100,00"></label>
+        <div class="full form-actions"><button id="balance-add" class="button button-dark" type="button">Adicionar saldo</button></div>
+      </div>
+      <div id="balance-result" class="result-box hidden"></div>
+    </article>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/conta.js') }}"></script>
+{% endblock %}

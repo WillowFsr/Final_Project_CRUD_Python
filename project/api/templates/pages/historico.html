@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-intro">
+  <div class="container page-intro-inner">
+    <div>
+      <span class="eyebrow">Depois da compra</span>
+      <h1>Seu histórico, sempre por perto.</h1>
+      <p>Veja os pedidos registrados para a conta selecionada.</p>
+    </div>
+    <div class="page-intro-mark">A / 06</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="history-toolbar">
+      <div>
+        <span class="card-eyebrow">CONSULTA</span>
+        <strong id="history-session-label">Nenhum cliente selecionado</strong>
+      </div>
+      <div class="history-toolbar-form">
+        <label class="field field-inline"><span>ID do cliente</span><input id="history-client-id" type="number" min="1" placeholder="Ex.: 4"></label>
+        <button id="history-load" class="button button-dark" type="button">Ver histórico</button>
+      </div>
+    </div>
+
+    <div id="history-list" class="history-list">
+      <div class="empty-state">Informe um cliente para consultar suas compras.</div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/historico.js') }}"></script>
+{% endblock %}

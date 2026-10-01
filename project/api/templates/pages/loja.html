@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-intro">
+  <div class="container page-intro-inner">
+    <div>
+      <span class="eyebrow">Catálogo</span>
+      <h1>Encontre o que combina com você.</h1>
+      <p>Escolha um produto, ajuste a quantidade e adicione à sua sacola.</p>
+    </div>
+    <div class="page-intro-mark">A / 02</div>
+  </div>
+</section>
+
+<section class="section section-store">
+  <div class="container">
+    <div class="store-toolbar">
+      <div class="store-session">
+        <span class="toolbar-label">Sessão de compra</span>
+        <strong id="store-session-label">Nenhum cliente definido</strong>
+        <span id="store-session-detail">Informe seu ID para liberar a sacola.</span>
+      </div>
+      <div class="store-controls">
+        <label class="field field-inline">
+          <span>Cliente</span>
+          <input id="store-client-id" type="number" min="1" placeholder="ID">
+        </label>
+        <button id="store-client-save" class="button button-dark" type="button">Usar cliente</button>
+      </div>
+    </div>
+
+    <div class="catalog-controls">
+      <label class="search-field">
+        <span>⌕</span>
+        <input id="store-search" type="search" placeholder="Buscar produto..." autocomplete="off">
+      </label>
+      <label class="sort-field">
+        <span>Ordenar</span>
+        <select id="store-sort">
+          <option value="featured">Destaques</option>
+          <option value="name">Nome</option>
+          <option value="price-asc">Menor preço</option>
+          <option value="price-desc">Maior preço</option>
+          <option value="stock">Maior estoque</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="store-message" class="notice hidden"></div>
+    <div id="product-grid" class="product-grid product-grid-store">
+      <div class="loading-card">Carregando catálogo...</div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/loja.js') }}"></script>
+{% endblock %}

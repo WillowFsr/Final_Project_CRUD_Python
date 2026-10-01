@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-intro page-intro-management">
+  <div class="container page-intro-inner">
+    <div>
+      <span class="eyebrow">Operação</span>
+      <h1>Gestão do catálogo.</h1>
+      <p>Cadastre produtos, ajuste informações e acompanhe o estoque sem sair da loja.</p>
+    </div>
+    <div class="page-intro-mark">A / 07</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container management-layout">
+    <article class="surface-card management-create-card">
+      <div class="card-eyebrow">NOVO PRODUTO</div>
+      <h2>Adicionar ao catálogo</h2>
+      <p class="card-lead">Cadastre um produto para que ele apareça imediatamente na loja.</p>
+      <form id="product-create-form" class="form-grid">
+        <label class="field full"><span>Nome do produto</span><input name="nome" maxlength="90" required placeholder="Ex.: Caderno Essential"></label>
+        <label class="field"><span>Preço</span><input name="preco" type="number" min="0" step="0.01" required placeholder="89,90"></label>
+        <label class="field"><span>Estoque inicial</span><input name="estoque" type="number" min="0" required placeholder="20"></label>
+        <label class="field full"><span>Descrição</span><textarea name="descricao" rows="4" required placeholder="Uma descrição curta e objetiva."></textarea></label>
+        <div class="full form-actions"><button class="button button-dark" type="submit">Cadastrar produto <span>→</span></button></div>
+      </form>
+      <div id="product-create-result" class="result-box hidden"></div>
+    </article>
+
+    <article class="surface-card management-note-card">
+      <div class="management-note-mark">A</div>
+      <span class="card-eyebrow">CATÁLOGO EM TEMPO REAL</span>
+      <h2>Edite sem perder o ritmo.</h2>
+      <p>Use os controles do catálogo para atualizar dados, aumentar ou diminuir estoque e remover produtos que não devem mais aparecer.</p>
+      <div class="management-note-list">
+        <span><strong>01</strong> dados do produto</span>
+        <span><strong>02</strong> estoque</span>
+        <span><strong>03</strong> disponibilidade</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="section section-soft">
+  <div class="container">
+    <div class="section-head management-list-head">
+      <div>
+        <span class="eyebrow">Catálogo atual</span>
+        <h2>Produtos cadastrados</h2>
+      </div>
+      <button id="management-refresh" class="button button-light-outline" type="button">Atualizar lista ↻</button>
+    </div>
+    <div id="management-list" class="management-list">
+      <div class="loading-card">Carregando catálogo...</div>
+    </div>
+  </div>
+</section>
+
+<div id="product-edit-modal" class="modal-backdrop hidden" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="edit-product-title">
+    <button id="edit-modal-close" class="modal-close" type="button" aria-label="Fechar">×</button>
+    <span class="card-eyebrow">EDITAR PRODUTO</span>
+    <h2 id="edit-product-title">Produto</h2>
+    <form id="product-edit-form" class="form-grid">
+      <input id="edit-product-id" type="hidden">
+      <label class="field full"><span>Nome</span><input id="edit-product-name" maxlength="90" required></label>
+      <label class="field"><span>Preço</span><input id="edit-product-price" type="number" min="0" step="0.01" required></label>
+      <label class="field"><span>Estoque</span><input id="edit-product-stock" type="number" min="0" required></label>
+      <label class="field full"><span>Descrição</span><textarea id="edit-product-description" rows="4" required></textarea></label>
+      <div class="full form-actions"><button class="button button-dark" type="submit">Salvar alterações</button></div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/gestao.js') }}"></script>
+{% endblock %}

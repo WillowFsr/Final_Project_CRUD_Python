@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-intro">
+  <div class="container page-intro-inner">
+    <div>
+      <span class="eyebrow">Sua seleção</span>
+      <h1>A sacola está quase pronta.</h1>
+      <p>Revise suas escolhas antes de confirmar a compra.</p>
+    </div>
+    <div class="page-intro-mark">A / 04</div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container cart-layout">
+    <article class="surface-card">
+      <div class="section-mini-head">
+        <div>
+          <span class="card-eyebrow">ITENS SELECIONADOS</span>
+          <h2>Minha sacola</h2>
+        </div>
+        <span id="cart-session-label" class="status-chip">Cliente não definido</span>
+      </div>
+      <div id="cart-content" class="cart-list">
+        <div class="empty-state">Escolha um cliente e adicione produtos na Loja.</div>
+      </div>
+    </article>
+
+    <aside class="surface-card summary-card">
+      <span class="card-eyebrow">RESUMO</span>
+      <h2>Seu pedido</h2>
+      <div class="summary-row"><span>Quantidade</span><strong id="cart-total-items">0</strong></div>
+      <div class="summary-row summary-total"><span>Total</span><strong id="cart-total-price">R$ 0,00</strong></div>
+      <a class="button button-dark button-full" href="/checkout">Continuar para checkout <span>→</span></a>
+      <a class="text-button centered" href="/loja">Continuar comprando</a>
+    </aside>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='js/sacola.js') }}"></script>
+{% endblock %}

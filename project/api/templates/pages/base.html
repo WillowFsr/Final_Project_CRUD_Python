@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1b2a">
+  <meta name="description" content="Aurea — uma experiência de compra simples, elegante e conectada ao seu backend.">
+  <title>{{ titulo }}</title>
+  <link rel="icon" href="{{ url_for('static', path='favicon.svg') }}" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+  <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="/" aria-label="Aurea, página inicial">
+        <span class="brand-symbol">A</span>
+        <span class="brand-copy">
+          <strong>AUREA</strong>
+          <small>everyday essentials</small>
+        </span>
+      </a>
+
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a data-nav href="/">Início</a>
+        <a data-nav href="/loja">Loja</a>
+        <a data-nav href="/gestao">Gestão</a>
+        <a data-nav href="/historico">Histórico</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a class="nav-account" href="/conta" aria-label="Minha conta">
+          <span class="nav-icon">◌</span>
+          <span class="nav-account-text">Conta</span>
+        </a>
+        <a class="bag-link" href="/sacola" aria-label="Abrir sacola">
+          <span class="nav-icon">⌂</span>
+          <span>Sacola</span>
+          <span id="nav-cart-count" class="nav-badge">0</span>
+        </a>
+        <button id="mobile-menu-button" class="mobile-menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav">Menu</button>
+      </div>
+    </div>
+
+    <div id="mobile-nav" class="mobile-nav" hidden>
+      <div class="container mobile-nav-inner">
+        <a href="/">Início</a>
+        <a href="/loja">Loja</a>
+        <a href="/gestao">Gestão</a>
+        <a href="/conta">Conta</a>
+        <a href="/historico">Histórico</a>
+        <a href="/sacola">Sacola</a>
+      </div>
+    </div>
+  </header>
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <footer class="site-footer">
+    <div class="container footer-top">
+      <div class="footer-brand-block">
+        <div class="footer-brand">AUREA</div>
+        <p>Uma experiência de compra leve, organizada e feita para o dia a dia.</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <span class="footer-label">Navegar</span>
+          <a href="/loja">Loja</a>
+          <a href="/conta">Minha conta</a>
+          <a href="/historico">Histórico</a>
+        </div>
+        <div>
+          <span class="footer-label">Gestão</span>
+          <a href="/gestao">Produtos</a>
+          <a href="/docs" target="_blank" rel="noreferrer">API</a>
+        </div>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 Aurea</span>
+      <span>Feito com FastAPI, Jinja2 e PostgreSQL</span>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', path='js/api.js') }}"></script>
+  <script src="{{ url_for('static', path='js/common.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
